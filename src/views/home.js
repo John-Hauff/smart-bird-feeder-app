@@ -20,7 +20,7 @@ export class HomeScreen extends React.Component {
                 
                 {/* Display the name of the App */}
                 <View style={styles.title}>
-                    <Text style={{ fontFamily: 'Roboto', fontSize: 25 , marginBottom: -15, marginTop: -15}}>The Chordeographer</Text>
+                    <Text style={{ fontFamily: 'Roboto', fontSize: 25 , marginBottom: -15, marginTop: -15}}>The Great Chordeographer</Text>
                 </View>
 
                 {/* Display the piano */}
