@@ -14,7 +14,7 @@ import {
   Avatar,
 } from "./../components/styles";
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   return (
     <>
       {/* Changed style to "light" to keep status bar visible */}
@@ -39,7 +39,12 @@ const Welcome = () => {
             {/* Insert styled horizontal line component */}
             <Line />
             {/* Insert the style component for a button */}
-            <StyledButton onPress={() => {}}>
+            <StyledButton
+              // Take the user back to Login screen upon selection of Logout button
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
               {/* Insert the styled button text */}
               <ButtonText>Logout</ButtonText>
             </StyledButton>
