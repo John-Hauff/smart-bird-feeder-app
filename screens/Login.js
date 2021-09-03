@@ -99,7 +99,7 @@ const Login = ({ navigation }) => {
                   <ExtraText>Don't have an account already? </ExtraText>
                   {/* Follow no account query with a link to create account */}
                   {/* Insert style component to contain a link text component 
-                  that takes user to Signup screen upon selection*/}
+                  that takes user to Signup screen upon selection */}
                   <TextLink onPress={() => navigation.navigate("Signup")}>
                     {/* Insert style component for actual link text */}
                     {/* Notice how when you select the 'Signup' text, the TextLink component gives it opacity */}

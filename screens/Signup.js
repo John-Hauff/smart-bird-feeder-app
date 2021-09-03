@@ -37,7 +37,7 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 // darkLight also will not work :(
 // const { brand, darkLight } = Colors;
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date(2000, 0, 1));
@@ -86,6 +86,8 @@ const Signup = () => {
             }}
             onSubmit={(values) => {
               console.log(values);
+              // Navigate to Welcome screen when Signup is submitted
+              navigation.navigate("Welcome");
             }}
           >
             {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -166,8 +168,9 @@ const Signup = () => {
                 <ExtraView>
                   <ExtraText>Already have an account? </ExtraText>
                   {/* Follow no account query with a link to create account */}
-                  {/* Insert style component to contain a link text component */}
-                  <TextLink>
+                  {/* Insert style component to contain a link text component 
+                  that takes user to Login screen upon selection */}
+                  <TextLink onPress={() => navigation.navigate("Login")}>
                     {/* Insert style component for actual link text */}
                     {/* Notice how when you select the 'Signup' text, the TextLink component gives it opacity */}
                     <TextLinkContent>Login</TextLinkContent>
