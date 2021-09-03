@@ -29,6 +29,9 @@ import {
 } from "./../components/styles";
 import { View } from "react-native";
 
+// import wrapper for view that avoids keyboard hiding components
+import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+
 // Use the brand color for icons (for some reason won't work; forced to hardcode style)
 // darkLight also will not work :(
 // const { brand, darkLight } = Colors;
@@ -37,72 +40,74 @@ const Login = () => {
   const [hidePassword, setHidePassword] = useState(true);
 
   return (
-    <StyledContainer>
-      <StatusBar style="dark" />
-      <InnerContainer>
-        <PageLogo
-          resizeMode="cover"
-          source={require("./../assets/birdhouse_retail.png")}
-        />
-        <PageTitle>Smart Bird Feeder App</PageTitle>
-        <SubTitle>Account Login</SubTitle>
+    <KeyboardAvoidingWrapper>
+      <StyledContainer>
+        <StatusBar style="dark" />
+        <InnerContainer>
+          <PageLogo
+            resizeMode="cover"
+            source={require("./../assets/birdhouse_retail.png")}
+          />
+          <PageTitle>Smart Bird Feeder App</PageTitle>
+          <SubTitle>Account Login</SubTitle>
 
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <StyledFormArea>
-              <MyTextInput
-                label="Email Address" // label above input text
-                icon="mail" // use imported icon image "mail"
-                placeholder="johndoe@gmail.com" // default display text
-                placeholderTextColor={"#9CA3AF"} // default text color
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                value={values.email}
-                keyboardType="email-address"
-              />
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            onSubmit={(values) => {
+              console.log(values);
+            }}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <StyledFormArea>
+                <MyTextInput
+                  label="Email Address" // label above input text
+                  icon="mail" // use imported icon image "mail"
+                  placeholder="johndoe@gmail.com" // default display text
+                  placeholderTextColor={"#9CA3AF"} // default text color
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                  keyboardType="email-address"
+                />
 
-              <MyTextInput
-                label="Password"
-                icon="lock"
-                placeholder="********"
-                placeholderTextColor={"#9CA3AF"}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password} // values.<name-passed-to-handleChange()>
-                secureTextEntry={hidePassword}
-                isPassword={true}
-                hidePassword={hidePassword}
-                setHidePassword={setHidePassword}
-              />
-              <MsgBox>...</MsgBox>
-              {/* Insert the style component for a button */}
-              <StyledButton onPress={handleSubmit}>
-                {/* Insert the styled button text */}
-                <ButtonText>Login</ButtonText>
-              </StyledButton>
-              {/* Insert styled horizontal line component */}
-              <Line />
-              {/* Insert Extra View component and place styled extra text into it */}
-              <ExtraView>
-                <ExtraText>Don't have an account already? </ExtraText>
-                {/* Follow no account query with a link to create account */}
-                {/* Insert style component to contain a link text component */}
-                <TextLink>
-                  {/* Insert style component for actual link text */}
-                  {/* Notice how when you select the 'Signup' text, the TextLink component gives it opacity */}
-                  <TextLinkContent>Signup</TextLinkContent>
-                </TextLink>
-              </ExtraView>
-            </StyledFormArea>
-          )}
-        </Formik>
-      </InnerContainer>
-    </StyledContainer>
+                <MyTextInput
+                  label="Password"
+                  icon="lock"
+                  placeholder="********"
+                  placeholderTextColor={"#9CA3AF"}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password} // values.<name-passed-to-handleChange()>
+                  secureTextEntry={hidePassword}
+                  isPassword={true}
+                  hidePassword={hidePassword}
+                  setHidePassword={setHidePassword}
+                />
+                <MsgBox>...</MsgBox>
+                {/* Insert the style component for a button */}
+                <StyledButton onPress={handleSubmit}>
+                  {/* Insert the styled button text */}
+                  <ButtonText>Login</ButtonText>
+                </StyledButton>
+                {/* Insert styled horizontal line component */}
+                <Line />
+                {/* Insert Extra View component and place styled extra text into it */}
+                <ExtraView>
+                  <ExtraText>Don't have an account already? </ExtraText>
+                  {/* Follow no account query with a link to create account */}
+                  {/* Insert style component to contain a link text component */}
+                  <TextLink>
+                    {/* Insert style component for actual link text */}
+                    {/* Notice how when you select the 'Signup' text, the TextLink component gives it opacity */}
+                    <TextLinkContent>Signup</TextLinkContent>
+                  </TextLink>
+                </ExtraView>
+              </StyledFormArea>
+            )}
+          </Formik>
+        </InnerContainer>
+      </StyledContainer>
+    </KeyboardAvoidingWrapper>
   );
 };
 
@@ -121,7 +126,9 @@ const MyTextInput = ({
         <Octicons name={icon} size={30} color={"#6D28D9"} />
       </LeftIcon>
       <StyledInputLabel>{label}</StyledInputLabel>
-      <StyledTextInput {...props} />
+      <KeyboardAvoidingWrapper>
+        <StyledTextInput {...props} />
+      </KeyboardAvoidingWrapper>
       {isPassword && (
         <RightIcon onPress={() => setHidePassword(!hidePassword)}>
           <Ionicons
