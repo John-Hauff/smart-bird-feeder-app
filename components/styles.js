@@ -7,7 +7,7 @@ const StatusBarHeight = Constants.statusBarHeight;
 
 // colors
 const Colors = {
-  primary: "#ffffff",
+  primary: "#FFFFFF",
   secondary: "#E5E7EB",
   tertiary: "#1F2937",
   darkLight: "#9CA3AF",

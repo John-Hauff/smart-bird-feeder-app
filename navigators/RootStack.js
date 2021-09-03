@@ -30,7 +30,11 @@ const RootStack = () => {
       >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen
+          options={{ headerTintColor: "#FFFFFF" }}
+          name="Welcome"
+          component={Welcome}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
