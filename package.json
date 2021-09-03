@@ -8,25 +8,16 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "~1.15.0",
     "expo": "~42.0.1",
-    "expo-av": "^9.2.3",
+    "expo-constants": "~11.0.1",
     "expo-status-bar": "~1.0.4",
-    "lodash": "^4.17.21",
+    "formik": "^2.2.9",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
-    "react-native-async-storage": "^0.0.1",
-    "react-native-gesture-handler": "^1.10.3",
-    "react-native-navigation": "^7.18.0",
-    "react-native-paper": "^4.9.2",
-    "react-native-paper-autocomplete": "^0.2.1",
-    "react-native-sound": "^0.11.0",
-    "react-native-soundfont": "^0.0.9",
     "react-native-web": "~0.13.12",
-    "react-navigation": "^4.4.4",
-    "react-navigation-material-bottom-tabs": "^2.3.4",
-    "soundfont-player": "^0.12.0"
+    "styled-components": "^5.3.1",
+    "@react-native-community/datetimepicker": "3.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
