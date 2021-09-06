@@ -3,6 +3,9 @@ import { StatusBar } from "expo-status-bar";
 
 import { Formik } from "formik";
 
+// API client
+import axios from "axios";
+
 // icons
 import { Octicons, Ionicons } from "@expo/vector-icons";
 
@@ -27,7 +30,7 @@ import {
   TextLink,
   TextLinkContent,
 } from "./../components/styles";
-import { View } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 
 // import wrapper for view that avoids keyboard hiding components
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
@@ -38,6 +41,42 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
 const Login = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
+  // State var to store the message
+  const [message, setMessage] = useState();
+  // A message can be a rejected error message or a success message
+  const [messageType, setMessageType] = useState();
+
+  const handleLogin = (credentials, setSubmitting) => {
+    // Clear message board
+    handleMessage(null);
+    const url = "https://smartbirdfeeder.herokuapp.com/";
+
+    axios
+      .post(url, credentials)
+      .then((response) => {
+        const result = response.data;
+        const { message, status, data } = result;
+
+        if (status !== "SUCCESS") {
+          handleMessage(message, status);
+        } else {
+          // SUCCESS: Move to Welcome page
+          navigation.navigate("Welcome", { ...data[0] });
+        }
+        setSubmitting(false);
+      })
+      .catch((error) => {
+        console.log(error.JSON());
+        setSubmitting(false);
+        // Likely bad user connection, so show msg to try again
+        handleMessage("An error occurred. Check your network and try again");
+      });
+  };
+
+  const handleMessage = (message, type = "FAILED") => {
+    setMessage(message);
+    setMessageType(type);
+  };
 
   return (
     <KeyboardAvoidingWrapper>
@@ -53,14 +92,25 @@ const Login = ({ navigation }) => {
 
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => {
-              console.log(values);
+            onSubmit={(values, { setSubmitting }) => {
               // Move to Welcome screen
               // TODO: deal with acct auth
-              navigation.navigate("Welcome");
+              // Check that no input fields empty
+              if (values.email == "" || value.password == "") {
+                handleMessage("Please fill out all the login fields");
+                setSubmitting(false);
+              } else {
+                handleLogin(values, setSubmitting);
+              }
             }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              isSubmitting,
+            }) => (
               <StyledFormArea>
                 <MyTextInput
                   label="Email Address" // label above input text
@@ -86,12 +136,25 @@ const Login = ({ navigation }) => {
                   hidePassword={hidePassword}
                   setHidePassword={setHidePassword}
                 />
-                <MsgBox>...</MsgBox>
+                <MsgBox type={messageType}>{message}</MsgBox>
                 {/* Insert the style component for a button */}
-                <StyledButton onPress={handleSubmit}>
-                  {/* Insert the styled button text */}
-                  <ButtonText>Login</ButtonText>
-                </StyledButton>
+                {!isSubmitting && (
+                  <StyledButton onPress={handleSubmit}>
+                    {/* Insert the styled button text */}
+                    <ButtonText>Login</ButtonText>
+                  </StyledButton>
+                )}
+
+                {/* If submitting, use an ActivityIndicator instead of onPress */}
+                {/* This ActivityIndicator will show a loading animation on the button when pressed */}
+                {isSubmitting && (
+                  // Button will not respond to presses while it's loaded when disabled={true}
+                  <StyledButton disabled={true}>
+                    <ActivityIndicator size="large" color={"#FFFFFF"} />
+                    <ButtonText>Login</ButtonText>
+                  </StyledButton>
+                )}
+
                 {/* Insert styled horizontal line component */}
                 <Line />
                 {/* Insert Extra View component and place styled extra text into it */}

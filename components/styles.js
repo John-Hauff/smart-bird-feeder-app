@@ -156,6 +156,7 @@ export const ButtonText = styled.Text`
 export const MsgBox = styled.Text`
   text-align: center;
   font-size: 13px;
+  color: ${(props) => (props.type == "SUCCESS" ? green : red)};
 `;
 
 // Styles a horizontal line to break up the page
