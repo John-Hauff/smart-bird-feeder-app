@@ -1,5 +1,5 @@
 // TODO: datetimepicker works fine on android but not on iOS
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Formik } from "formik";
@@ -34,6 +34,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import axios from "axios";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { CredentialsContext } from "../components/CredentialsContext";
+
 // Use the brand color for icons (for some reason won't work; forced to hardcode style)
 // darkLight also will not work :(
 // const { brand, darkLight } = Colors;
@@ -49,6 +53,11 @@ const Signup = ({ navigation }) => {
 
   // User DOB to be sent
   const [dob, setDob] = useState();
+
+  // Context
+  const [storedCredentials, setStoredCredentials] = useContext(
+    CredentialsContext
+  );
 
   // onChange runs when the selected value of DOB changes
   const onChange = (event, selectedDate) => {
@@ -81,7 +90,7 @@ const Signup = ({ navigation }) => {
         } else {
           // SUCCESS: Move to Welcome page
           // Signup return data is not an array, so just spread `data`
-          navigation.navigate("Welcome", { ...data });
+          persistLogin({ ...data }, message, status);
         }
         setSubmitting(false);
       })
@@ -96,6 +105,21 @@ const Signup = ({ navigation }) => {
   const handleMessage = (message, type = "FAILED") => {
     setMessage(message);
     setMessageType(type);
+  };
+
+  const persistLogin = (credentials, message, status) => {
+    AsyncStorage.setItem(
+      "smartBirdFeederCredentials",
+      JSON.stringify(credentials)
+        .then(() => {
+          handleMessage(message, status);
+          setStoredCredentials(credentials);
+        })
+        .catch((error) => {
+          console.log(error);
+          handleMessage("Persisting login failed");
+        })
+    );
   };
 
   return (

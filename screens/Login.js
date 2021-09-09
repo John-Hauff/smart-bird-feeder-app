@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Formik } from "formik";
@@ -34,6 +34,7 @@ import { View, ActivityIndicator } from "react-native";
 
 // import wrapper for view that avoids keyboard hiding components
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import { CredentialsContext } from "../components/CredentialsContext";
 
 // Use the brand color for icons (for some reason won't work; forced to hardcode style)
 // darkLight also will not work :(
@@ -45,6 +46,11 @@ const Login = ({ navigation }) => {
   const [message, setMessage] = useState();
   // A message can be a rejected error message or a success message
   const [messageType, setMessageType] = useState();
+
+  // Context
+  const [storedCredentials, setStoredCredentials] = useContext(
+    CredentialsContext
+  );
 
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board
@@ -63,7 +69,8 @@ const Login = ({ navigation }) => {
         } else {
           // SUCCESS: Move to Welcome page
           // Signin return data is an array, so get the first item
-          navigation.navigate("Welcome", { ...data[0] });
+          // Welcome screen will auto-display for an existing user
+          persistLogin({ ...data[0] }, message, status);
         }
         setSubmitting(false);
       })
@@ -78,6 +85,21 @@ const Login = ({ navigation }) => {
   const handleMessage = (message, type = "FAILED") => {
     setMessage(message);
     setMessageType(type);
+  };
+
+  const persistLogin = (credentials, message, status) => {
+    AsyncStorage.setItem(
+      "smartBirdFeederCredentials",
+      JSON.stringify(credentials)
+        .then(() => {
+          handleMessage(message, status);
+          setStoredCredentials(credentials);
+        })
+        .catch((error) => {
+          console.log(error);
+          handleMessage("Persisting login failed");
+        })
+    );
   };
 
   return (
