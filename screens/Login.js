@@ -49,7 +49,7 @@ const Login = ({ navigation }) => {
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    const url = "https://smartbirdfeeder.herokuapp.com/";
+    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
 
     axios
       .post(url, credentials)
@@ -61,12 +61,13 @@ const Login = ({ navigation }) => {
           handleMessage(message, status);
         } else {
           // SUCCESS: Move to Welcome page
+          // Signin return data is an array, so get the first item
           navigation.navigate("Welcome", { ...data[0] });
         }
         setSubmitting(false);
       })
       .catch((error) => {
-        console.log(error.JSON());
+        console.log(error);
         setSubmitting(false);
         // Likely bad user connection, so show msg to try again
         handleMessage("An error occurred. Check your network and try again");
@@ -96,7 +97,7 @@ const Login = ({ navigation }) => {
               // Move to Welcome screen
               // TODO: deal with acct auth
               // Check that no input fields empty
-              if (values.email == "" || value.password == "") {
+              if (values.email == "" || values.password == "") {
                 handleMessage("Please fill out all the login fields");
                 setSubmitting(false);
               } else {

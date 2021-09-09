@@ -3,6 +3,9 @@
 __generated__
 web-build
 
+# environment
+.env
+
 # macOS
 .DS_Store
 
@@ -10,4 +13,3 @@ web-build
 node_modules
 npm-debug.log
 yarn-error.log
-
