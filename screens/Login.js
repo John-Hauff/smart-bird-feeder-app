@@ -49,7 +49,8 @@ const Login = ({ navigation }) => {
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
+    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
+    const url = "http://localhost:3000/user/signin";
 
     axios
       .post(url, credentials)

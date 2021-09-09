@@ -14,7 +14,8 @@ import {
   Avatar,
 } from "./../components/styles";
 
-const Welcome = ({ navigation }) => {
+const Welcome = ({ navigation, route }) => {
+  const { name, email } = route.params;
   return (
     <>
       {/* Changed style to "light" to keep status bar visible */}
@@ -28,8 +29,8 @@ const Welcome = ({ navigation }) => {
           <PageTitle welcome={true}>
             Welcome to the Smart Bird Feeder App!
           </PageTitle>
-          <SubTitle welcome={true}>John Doe</SubTitle>
-          <SubTitle welcome={true}>johndoe@gmail.com</SubTitle>
+          <SubTitle welcome={true}>{name || "John Doe"}</SubTitle>
+          <SubTitle welcome={true}>{email || "johndoe@gmail.com"}</SubTitle>
           <StyledFormArea>
             {/* Insert fancy welcome image! */}
             <Avatar
