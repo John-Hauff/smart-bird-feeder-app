@@ -27,11 +27,12 @@ import {
   TextLink,
   TextLinkContent,
 } from "./../components/styles";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ActivityIndicator } from "react-native";
 
 // Allows user to choose dates and/or times from a drop-down calendar view
 import DateTimePicker from "@react-native-community/datetimepicker";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import axios from "axios";
 
 // Use the brand color for icons (for some reason won't work; forced to hardcode style)
 // darkLight also will not work :(
@@ -41,6 +42,10 @@ const Signup = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date(2000, 0, 1));
+  // State var to store the message
+  const [message, setMessage] = useState();
+  // A message can be a rejected error message or a success message
+  const [messageType, setMessageType] = useState();
 
   // User DOB to be sent
   const [dob, setDob] = useState();
@@ -56,6 +61,41 @@ const Signup = ({ navigation }) => {
   // Function to display the date picker window
   const showDatePicker = () => {
     setShow(true);
+  };
+
+  // Handle signup forms
+  const handleSignup = (credentials, setSubmitting) => {
+    // Clear message board
+    handleMessage(null);
+    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signup";
+    const url = "http://localhost:3000/user/signup";
+
+    axios
+      .post(url, credentials)
+      .then((response) => {
+        const result = response.data;
+        const { message, status, data } = result;
+
+        if (status !== "SUCCESS") {
+          handleMessage(message, status);
+        } else {
+          // SUCCESS: Move to Welcome page
+          // Signup return data is not an array, so just spread `data`
+          navigation.navigate("Welcome", { ...data });
+        }
+        setSubmitting(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setSubmitting(false);
+        // Likely bad user connection, so show msg to try again
+        handleMessage("An error occurred. Check your network and try again");
+      });
+  };
+
+  const handleMessage = (message, type = "FAILED") => {
+    setMessage(message);
+    setMessageType(type);
   };
 
   return (
@@ -74,32 +114,58 @@ const Signup = ({ navigation }) => {
               is24Hour={true}
               display="default"
               onChange={onChange}
+              style={{ width: 320, backgroundColor: "white" }}
             />
           )}
 
           <Formik
             initialValues={{
-              fullName: "",
+              name: "",
               email: "",
               dateOfBirth: "",
               password: "",
             }}
-            onSubmit={(values) => {
-              console.log(values);
-              // Navigate to Welcome screen when Signup is submitted
-              navigation.navigate("Welcome");
+            onSubmit={(values, { setSubmitting }) => {
+              // Check that no input fields empty
+              // Formik can't handle the datetimeopicker input, so deal w/ it manually
+              values = { ...values, dateOfBirth: dob };
+              if (
+                values.email == "" ||
+                values.password == "" ||
+                values.name == "" ||
+                values.dateOfBirth == ""
+              ) {
+                handleMessage("Please fill out all the Signup fields");
+                console.log(
+                  values.email,
+                  values.password,
+                  values.name,
+                  values.dateOfBirth
+                );
+                setSubmitting(false);
+              } else if (values.password !== values.confirmPassword) {
+                handleMessage("Passwords do not match");
+              } else {
+                handleSignup(values, setSubmitting);
+              }
             }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              isSubmitting,
+            }) => (
               <StyledFormArea>
                 <MyTextInput
                   label="Full Name"
                   icon="person"
                   placeholder="John Doe"
                   placeholderTextColor={"#9CA3AF"}
-                  onChangeText={handleChange("fullName")}
-                  onBlur={handleBlur("fullName")}
-                  value={values.fullName}
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  value={values.name}
                 />
 
                 <MyTextInput
@@ -116,7 +182,7 @@ const Signup = ({ navigation }) => {
                 <MyTextInput
                   label="Date of Birth"
                   icon="calendar"
-                  placeholder="DD/MM/YYY"
+                  placeholder="DD/MM/YYYY"
                   placeholderTextColor={"#9CA3AF"}
                   onChangeText={handleChange("dateOfBirth")}
                   onBlur={handleBlur("dateOfBirth")}
@@ -148,20 +214,33 @@ const Signup = ({ navigation }) => {
                   placeholder="********"
                   placeholderTextColor={"#9CA3AF"}
                   onChangeText={handleChange("confirmPassword")}
-                  onBlur={handleBlur("confirmpassword")}
-                  value={values.confirmpassword}
+                  onBlur={handleBlur("confirmPassword")}
+                  value={values.confirmPassword}
                   secureTextEntry={hidePassword}
                   isPassword={true}
                   hidePassword={hidePassword}
                   setHidePassword={setHidePassword}
                 />
 
-                <MsgBox>...</MsgBox>
+                <MsgBox type={messageType}>{message}</MsgBox>
                 {/* Insert the style component for a button */}
-                <StyledButton onPress={handleSubmit}>
-                  {/* Insert the styled button text */}
-                  <ButtonText>Sign Up</ButtonText>
-                </StyledButton>
+                {!isSubmitting && (
+                  <StyledButton onPress={handleSubmit}>
+                    {/* Insert the styled button text */}
+                    <ButtonText>Signup</ButtonText>
+                  </StyledButton>
+                )}
+
+                {/* If submitting, use an ActivityIndicator instead of onPress */}
+                {/* This ActivityIndicator will show a loading animation on the button when pressed */}
+                {isSubmitting && (
+                  // Button will not respond to presses while it's loaded when disabled={true}
+                  <StyledButton disabled={true}>
+                    <ActivityIndicator size="large" color={"#FFFFFF"} />
+                    <ButtonText>Signup</ButtonText>
+                  </StyledButton>
+                )}
+
                 {/* Insert styled horizontal line component */}
                 <Line />
                 {/* Insert Extra View component and place styled extra text into it */}

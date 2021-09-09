@@ -95,8 +95,6 @@ const Login = ({ navigation }) => {
           <Formik
             initialValues={{ email: "", password: "" }}
             onSubmit={(values, { setSubmitting }) => {
-              // Move to Welcome screen
-              // TODO: deal with acct auth
               // Check that no input fields empty
               if (values.email == "" || values.password == "") {
                 handleMessage("Please fill out all the login fields");
@@ -138,6 +136,7 @@ const Login = ({ navigation }) => {
                   hidePassword={hidePassword}
                   setHidePassword={setHidePassword}
                 />
+
                 <MsgBox type={messageType}>{message}</MsgBox>
                 {/* Insert the style component for a button */}
                 {!isSubmitting && (
