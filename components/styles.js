@@ -6,7 +6,7 @@ import Constants from "expo-constants";
 const StatusBarHeight = Constants.statusBarHeight;
 
 // colors
-const Colors = {
+export const Colors = {
   primary: "#FFFFFF",
   secondary: "#E5E7EB",
   tertiary: "#1F2937",
@@ -143,14 +143,14 @@ export const StyledButton = styled.TouchableOpacity`
   background-color: ${brand};
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 100px;
   margin-vertical: 5px;
   height: 60px;
 `;
 
 export const ButtonText = styled.Text`
   color: ${primary};
-  font-size: 16px;
+  font-size: 18px;
 `;
 
 export const MsgBox = styled.Text`

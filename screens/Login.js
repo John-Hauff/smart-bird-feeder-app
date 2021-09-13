@@ -39,9 +39,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { CredentialsContext } from "../components/CredentialsContext";
 
-// Use the brand color for icons (for some reason won't work; forced to hardcode style)
-// darkLight also will not work :(
-// const { brand, darkLight } = Colors;
+const { brand, darkLight, primary } = Colors;
 
 const Login = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
@@ -142,7 +140,7 @@ const Login = ({ navigation }) => {
                   label="Email Address" // label above input text
                   icon="mail" // use imported icon image "mail"
                   placeholder="johndoe@gmail.com" // default display text
-                  placeholderTextColor={"#9CA3AF"} // default text color
+                  placeholderTextColor={darkLight} // default text color
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -153,7 +151,7 @@ const Login = ({ navigation }) => {
                   label="Password"
                   icon="lock"
                   placeholder="********"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password} // values.<name-passed-to-handleChange()>
@@ -178,7 +176,7 @@ const Login = ({ navigation }) => {
                 {isSubmitting && (
                   // Button will not respond to presses while it's loaded when disabled={true}
                   <StyledButton disabled={true}>
-                    <ActivityIndicator size="large" color={"#FFFFFF"} />
+                    <ActivityIndicator size="large" color={primary} />
                     <ButtonText>Login</ButtonText>
                   </StyledButton>
                 )}
@@ -218,7 +216,7 @@ const MyTextInput = ({
   return (
     <View>
       <LeftIcon>
-        <Octicons name={icon} size={30} color={"#6D28D9"} />
+        <Octicons name={icon} size={30} color={brand} />
       </LeftIcon>
       <StyledInputLabel>{label}</StyledInputLabel>
       <KeyboardAvoidingWrapper>
@@ -229,7 +227,7 @@ const MyTextInput = ({
           <Ionicons
             name={hidePassword ? "md-eye-off" : "md-eye"}
             size={30}
-            color={"#6D28D9"}
+            color={brand}
           />
         </RightIcon>
       )}
