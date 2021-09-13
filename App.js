@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // import RootStack, which has navigator for screens
 import RootStack from "./navigators/RootStack";
@@ -14,10 +14,10 @@ export default function App() {
   const [storedCredentials, setStoredCredentials] = useState("");
 
   const checkLoginCredentials = () => {
-    AsyncStorage.getItem("smartBirdFeederCredentials") // get item from item key
+    AsyncStorage.getItem("smartBirdFeederCredentials")
       .then((result) => {
         if (result !== null) {
-          setStoredCredential(JSON.parse(result));
+          setStoredCredentials(JSON.parse(result));
         } else {
           setStoredCredentials(null);
         }
@@ -28,7 +28,7 @@ export default function App() {
   if (!appReady) {
     return (
       <AppLoading
-        startAsync={}
+        startAsync={checkLoginCredentials}
         onFinish={() => {
           setAppReady(true);
         }}

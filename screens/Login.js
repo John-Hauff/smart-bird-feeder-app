@@ -34,6 +34,9 @@ import { View, ActivityIndicator } from "react-native";
 
 // import wrapper for view that avoids keyboard hiding components
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { CredentialsContext } from "../components/CredentialsContext";
 
 // Use the brand color for icons (for some reason won't work; forced to hardcode style)
@@ -47,16 +50,16 @@ const Login = ({ navigation }) => {
   // A message can be a rejected error message or a success message
   const [messageType, setMessageType] = useState();
 
-  // Context
-  const [storedCredentials, setStoredCredentials] = useContext(
+  // Context variables
+  const { storedCredentials, setStoredCredentials } = useContext(
     CredentialsContext
   );
 
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
-    const url = "http://localhost:3000/user/signin";
+    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
+    // const url = "http://localhost:3000/user/signin";
 
     axios
       .post(url, credentials)
@@ -91,15 +94,16 @@ const Login = ({ navigation }) => {
     AsyncStorage.setItem(
       "smartBirdFeederCredentials",
       JSON.stringify(credentials)
-        .then(() => {
-          handleMessage(message, status);
-          setStoredCredentials(credentials);
-        })
-        .catch((error) => {
-          console.log(error);
-          handleMessage("Persisting login failed");
-        })
-    );
+    )
+      .then(() => {
+        handleMessage(message, status);
+        // Update credentials context
+        setStoredCredentials(credentials);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleMessage("Persisting login failed");
+      });
   };
 
   return (
@@ -160,6 +164,7 @@ const Login = ({ navigation }) => {
                 />
 
                 <MsgBox type={messageType}>{message}</MsgBox>
+
                 {/* Insert the style component for a button */}
                 {!isSubmitting && (
                   <StyledButton onPress={handleSubmit}>

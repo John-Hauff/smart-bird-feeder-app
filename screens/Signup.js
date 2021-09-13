@@ -54,8 +54,8 @@ const Signup = ({ navigation }) => {
   // User DOB to be sent
   const [dob, setDob] = useState();
 
-  // Context
-  const [storedCredentials, setStoredCredentials] = useContext(
+  // Context variables
+  const { storedCredentials, setStoredCredentials } = useContext(
     CredentialsContext
   );
 
@@ -76,8 +76,8 @@ const Signup = ({ navigation }) => {
   const handleSignup = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signup";
-    const url = "http://localhost:3000/user/signup";
+    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signup";
+    // const url = "http://localhost:3000/user/signup";
 
     axios
       .post(url, credentials)
@@ -111,15 +111,15 @@ const Signup = ({ navigation }) => {
     AsyncStorage.setItem(
       "smartBirdFeederCredentials",
       JSON.stringify(credentials)
-        .then(() => {
-          handleMessage(message, status);
-          setStoredCredentials(credentials);
-        })
-        .catch((error) => {
-          console.log(error);
-          handleMessage("Persisting login failed");
-        })
-    );
+    )
+      .then(() => {
+        handleMessage(message, status);
+        setStoredCredentials(credentials);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleMessage("Persisting login failed");
+      });
   };
 
   return (
@@ -247,6 +247,7 @@ const Signup = ({ navigation }) => {
                 />
 
                 <MsgBox type={messageType}>{message}</MsgBox>
+
                 {/* Insert the style component for a button */}
                 {!isSubmitting && (
                   <StyledButton onPress={handleSubmit}>

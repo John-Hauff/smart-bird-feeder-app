@@ -41,6 +41,7 @@ const RootStack = () => {
               />
             ) : (
               <>
+                {/* Otherwise, return stack of the Login and Signup screens */}
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Signup" component={Signup} />
               </>
