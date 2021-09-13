@@ -34,7 +34,7 @@ export const InnerContainer = styled.View`
   align-items: center;
 `;
 
-// Since WelcomeContainer is Siilar to the InnerContainer,
+// Since WelcomeContainer is similar to the InnerContainer,
 // we can just pass in all the styles from InnerContainer
 // as a param, then add a few extra styles as well
 export const WelcomeContainer = styled(InnerContainer)`

@@ -52,8 +52,6 @@ const Welcome = () => {
           <SubTitle welcome={true}>{name || "John Doe"}</SubTitle>
           <SubTitle welcome={true}>{email || "johndoe@gmail.com"}</SubTitle>
           <StyledFormArea>
-            {/* Insert fancy welcome image! */}
-            <Avatar resizeMode="cover" source={avatarImg} />
             {/* Insert styled horizontal line component */}
             <Line />
             {/* Insert the style component for a button */}
