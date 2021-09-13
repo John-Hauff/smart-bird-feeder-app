@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo_rn_tut_app",
-    "slug": "expo_rn_tut_app",
+    "name": "SmartBirdFeederApp",
+    "slug": "SmartBirdFeederApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
