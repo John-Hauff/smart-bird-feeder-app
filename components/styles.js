@@ -6,7 +6,7 @@ import Constants from "expo-constants";
 const StatusBarHeight = Constants.statusBarHeight;
 
 // colors
-const Colors = {
+export const Colors = {
   primary: "#FFFFFF",
   secondary: "#E5E7EB",
   tertiary: "#1F2937",
@@ -34,7 +34,7 @@ export const InnerContainer = styled.View`
   align-items: center;
 `;
 
-// Since WelcomeContainer is Siilar to the InnerContainer,
+// Since WelcomeContainer is similar to the InnerContainer,
 // we can just pass in all the styles from InnerContainer
 // as a param, then add a few extra styles as well
 export const WelcomeContainer = styled(InnerContainer)`
@@ -143,20 +143,20 @@ export const StyledButton = styled.TouchableOpacity`
   background-color: ${brand};
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 100px;
   margin-vertical: 5px;
   height: 60px;
 `;
 
 export const ButtonText = styled.Text`
   color: ${primary};
-  font-size: 16px;
+  font-size: 18px;
 `;
 
 export const MsgBox = styled.Text`
   text-align: center;
   font-size: 13px;
-  color: ${(props) => (props.type == "SUCCESS" ? green : red)};
+  color: ${(props) => (props.type == "SUCCESS" ? "#10B981" : "#EF4444")};
 `;
 
 // Styles a horizontal line to break up the page

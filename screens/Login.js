@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Formik } from "formik";
@@ -35,9 +35,11 @@ import { View, ActivityIndicator } from "react-native";
 // import wrapper for view that avoids keyboard hiding components
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
-// Use the brand color for icons (for some reason won't work; forced to hardcode style)
-// darkLight also will not work :(
-// const { brand, darkLight } = Colors;
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { CredentialsContext } from "../components/CredentialsContext";
+
+const { brand, darkLight, primary } = Colors;
 
 const Login = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
@@ -46,11 +48,16 @@ const Login = ({ navigation }) => {
   // A message can be a rejected error message or a success message
   const [messageType, setMessageType] = useState();
 
+  // Context variables
+  const { storedCredentials, setStoredCredentials } = useContext(
+    CredentialsContext
+  );
+
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
-    const url = "http://localhost:3000/user/signin";
+    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signin";
+    // const url = "http://localhost:3000/user/signin";
 
     axios
       .post(url, credentials)
@@ -63,7 +70,8 @@ const Login = ({ navigation }) => {
         } else {
           // SUCCESS: Move to Welcome page
           // Signin return data is an array, so get the first item
-          navigation.navigate("Welcome", { ...data[0] });
+          // Welcome screen will auto-display for an existing user
+          persistLogin({ ...data[0] }, message, status);
         }
         setSubmitting(false);
       })
@@ -78,6 +86,22 @@ const Login = ({ navigation }) => {
   const handleMessage = (message, type = "FAILED") => {
     setMessage(message);
     setMessageType(type);
+  };
+
+  const persistLogin = (credentials, message, status) => {
+    AsyncStorage.setItem(
+      "smartBirdFeederCredentials",
+      JSON.stringify(credentials)
+    )
+      .then(() => {
+        handleMessage(message, status);
+        // Update credentials context
+        setStoredCredentials(credentials);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleMessage("Persisting login failed");
+      });
   };
 
   return (
@@ -116,7 +140,7 @@ const Login = ({ navigation }) => {
                   label="Email Address" // label above input text
                   icon="mail" // use imported icon image "mail"
                   placeholder="johndoe@gmail.com" // default display text
-                  placeholderTextColor={"#9CA3AF"} // default text color
+                  placeholderTextColor={darkLight} // default text color
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -127,7 +151,7 @@ const Login = ({ navigation }) => {
                   label="Password"
                   icon="lock"
                   placeholder="********"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password} // values.<name-passed-to-handleChange()>
@@ -138,6 +162,7 @@ const Login = ({ navigation }) => {
                 />
 
                 <MsgBox type={messageType}>{message}</MsgBox>
+
                 {/* Insert the style component for a button */}
                 {!isSubmitting && (
                   <StyledButton onPress={handleSubmit}>
@@ -151,7 +176,7 @@ const Login = ({ navigation }) => {
                 {isSubmitting && (
                   // Button will not respond to presses while it's loaded when disabled={true}
                   <StyledButton disabled={true}>
-                    <ActivityIndicator size="large" color={"#FFFFFF"} />
+                    <ActivityIndicator size="large" color={primary} />
                     <ButtonText>Login</ButtonText>
                   </StyledButton>
                 )}
@@ -191,7 +216,7 @@ const MyTextInput = ({
   return (
     <View>
       <LeftIcon>
-        <Octicons name={icon} size={30} color={"#6D28D9"} />
+        <Octicons name={icon} size={30} color={brand} />
       </LeftIcon>
       <StyledInputLabel>{label}</StyledInputLabel>
       <KeyboardAvoidingWrapper>
@@ -202,7 +227,7 @@ const MyTextInput = ({
           <Ionicons
             name={hidePassword ? "md-eye-off" : "md-eye"}
             size={30}
-            color={"#6D28D9"}
+            color={brand}
           />
         </RightIcon>
       )}

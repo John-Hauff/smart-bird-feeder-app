@@ -1,5 +1,5 @@
 // TODO: datetimepicker works fine on android but not on iOS
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 
 import { Formik } from "formik";
@@ -34,9 +34,13 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import axios from "axios";
 
-// Use the brand color for icons (for some reason won't work; forced to hardcode style)
-// darkLight also will not work :(
-// const { brand, darkLight } = Colors;
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { CredentialsContext } from "../components/CredentialsContext";
+import { DarkTheme } from "@react-navigation/native";
+
+// Use the brand color for icons
+const { brand, darkLight, primary } = Colors;
 
 const Signup = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
@@ -49,6 +53,11 @@ const Signup = ({ navigation }) => {
 
   // User DOB to be sent
   const [dob, setDob] = useState();
+
+  // Context variables
+  const { storedCredentials, setStoredCredentials } = useContext(
+    CredentialsContext
+  );
 
   // onChange runs when the selected value of DOB changes
   const onChange = (event, selectedDate) => {
@@ -67,8 +76,8 @@ const Signup = ({ navigation }) => {
   const handleSignup = (credentials, setSubmitting) => {
     // Clear message board
     handleMessage(null);
-    // const url = "https://smart-bird-feeder-api.herokuapp.com/user/signup";
-    const url = "http://localhost:3000/user/signup";
+    const url = "https://smart-bird-feeder-api.herokuapp.com/user/signup";
+    // const url = "http://localhost:3000/user/signup";
 
     axios
       .post(url, credentials)
@@ -81,7 +90,7 @@ const Signup = ({ navigation }) => {
         } else {
           // SUCCESS: Move to Welcome page
           // Signup return data is not an array, so just spread `data`
-          navigation.navigate("Welcome", { ...data });
+          persistLogin({ ...data }, message, status);
         }
         setSubmitting(false);
       })
@@ -96,6 +105,21 @@ const Signup = ({ navigation }) => {
   const handleMessage = (message, type = "FAILED") => {
     setMessage(message);
     setMessageType(type);
+  };
+
+  const persistLogin = (credentials, message, status) => {
+    AsyncStorage.setItem(
+      "smartBirdFeederCredentials",
+      JSON.stringify(credentials)
+    )
+      .then(() => {
+        handleMessage(message, status);
+        setStoredCredentials(credentials);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleMessage("Persisting login failed");
+      });
   };
 
   return (
@@ -137,10 +161,10 @@ const Signup = ({ navigation }) => {
               ) {
                 handleMessage("Please fill out all the Signup fields");
                 console.log(
-                  values.email,
-                  values.password,
                   values.name,
-                  values.dateOfBirth
+                  values.email,
+                  values.dateOzfBirth,
+                  values.password
                 );
                 setSubmitting(false);
               } else if (values.password !== values.confirmPassword) {
@@ -162,7 +186,7 @@ const Signup = ({ navigation }) => {
                   label="Full Name"
                   icon="person"
                   placeholder="John Doe"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("name")}
                   onBlur={handleBlur("name")}
                   value={values.name}
@@ -172,7 +196,7 @@ const Signup = ({ navigation }) => {
                   label="Email Address"
                   icon="mail"
                   placeholder="johndoe@gmail.com"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -183,7 +207,7 @@ const Signup = ({ navigation }) => {
                   label="Date of Birth"
                   icon="calendar"
                   placeholder="DD/MM/YYYY"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("dateOfBirth")}
                   onBlur={handleBlur("dateOfBirth")}
                   value={dob ? dob.toDateString() : ""}
@@ -198,7 +222,7 @@ const Signup = ({ navigation }) => {
                   label="Password"
                   icon="lock"
                   placeholder="********"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
@@ -212,7 +236,7 @@ const Signup = ({ navigation }) => {
                   label="Confirm Password"
                   icon="lock"
                   placeholder="********"
-                  placeholderTextColor={"#9CA3AF"}
+                  placeholderTextColor={darkLight}
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
                   value={values.confirmPassword}
@@ -223,6 +247,7 @@ const Signup = ({ navigation }) => {
                 />
 
                 <MsgBox type={messageType}>{message}</MsgBox>
+
                 {/* Insert the style component for a button */}
                 {!isSubmitting && (
                   <StyledButton onPress={handleSubmit}>
@@ -236,7 +261,7 @@ const Signup = ({ navigation }) => {
                 {isSubmitting && (
                   // Button will not respond to presses while it's loaded when disabled={true}
                   <StyledButton disabled={true}>
-                    <ActivityIndicator size="large" color={"#FFFFFF"} />
+                    <ActivityIndicator size="large" color={primary} />
                     <ButtonText>Signup</ButtonText>
                   </StyledButton>
                 )}
@@ -278,7 +303,7 @@ const MyTextInput = ({
   return (
     <View>
       <LeftIcon>
-        <Octicons name={icon} size={30} color={"#6D28D9"} />
+        <Octicons name={icon} size={30} color={brand} />
       </LeftIcon>
       <StyledInputLabel>{label}</StyledInputLabel>
       {/* 1st condition: if isData is false, pass text input component as usual */}
@@ -294,7 +319,7 @@ const MyTextInput = ({
           <Ionicons
             name={hidePassword ? "md-eye-off" : "md-eye"}
             size={30}
-            color={"#6D28D9"}
+            color={brand}
           />
         </RightIcon>
       )}

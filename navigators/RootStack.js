@@ -11,32 +11,45 @@ import Welcome from "../screens/Welcome";
 
 const Stack = createNativeStackNavigator();
 
+import { CredentialsContext } from "../components/CredentialsContext";
+
 const RootStack = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyled: {
-            backgroundColor: "transparent",
-          },
-          headerTintColor: "#1F2937",
-          headerTransparent: true,
-          headerTitle: "",
-          headerLeftContainerStyle: {
-            paddingLeft: 20,
-          },
-        }}
-        initialRouteName="Login"
-      >
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen
-          options={{ headerTintColor: "#FFFFFF" }}
-          name="Welcome"
-          component={Welcome}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <CredentialsContext.Consumer>
+      {({ storedCredentials }) => (
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyled: {
+                backgroundColor: "transparent",
+              },
+              headerTintColor: "#1F2937",
+              headerTransparent: true,
+              headerTitle: "",
+              headerLeftContainerStyle: {
+                paddingLeft: 20,
+              },
+            }}
+            initialRouteName="Login"
+          >
+            {/* Immediately move to Welcome screen if storedCredentials is not null */}
+            {storedCredentials ? (
+              <Stack.Screen
+                options={{ headerTintColor: "#FFFFFF" }}
+                name="Welcome"
+                component={Welcome}
+              />
+            ) : (
+              <>
+                {/* Otherwise, return stack of the Login and Signup screens */}
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Signup" component={Signup} />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
+    </CredentialsContext.Consumer>
   );
 };
 
