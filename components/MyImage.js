@@ -20,14 +20,10 @@ function componentDidMount(setImage, isFetching, setIsFetching) {
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
-      // let base64Flag = "data:image/jpeg;base64,";
       imageStr = arrayBufferToBase64(data.img.data.data);
-      // console.log("imageStr = ", imageStr);
       setImage({ img: base64Flag + imageStr });
       setIsFetching(false);
     });
-
-  // return { img: base64Flag + imageStr };
 }
 
 const MyImage = () => {
@@ -40,11 +36,13 @@ const MyImage = () => {
 
   return (
     image && (
+      // TODO: Make style in styles.js for bird memory Image component
+      // (temp style is from Image component)
       <Image
         style={{
+          marginTop: 100,
           width: 300,
           height: 300,
-          // resizeMode: "cover",
           borderWidth: 1,
           borderColor: "gray",
         }}
@@ -57,32 +55,3 @@ const MyImage = () => {
 };
 
 export default MyImage;
-
-// ~~~~~~~~~~~ OLD CODE ~~~~~~~~~~~
-// constructor(props) {
-//   super(props);
-//   this.state = {
-//     img: "",
-//   };
-// }
-// arrayBufferToBase64(buffer) {
-//   let binary = "";
-//   let bytes = [].slice.call(new Uint8Array(buffer));
-//   bytes.forEach((b) => (binary += String.fromCharCode(b)));
-//   return window.btoa(binary);
-// }
-// componentDidMount() {
-//   const url =
-//     "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
-//   axios
-//     .get(url)
-//     .then((res) => res.json())
-//     .then((data) => {
-//       let base64Flag = "data:image/jpeg;base64,";
-//       let imageStr = this.arrayBufferToBase64(data.img.data.data);
-//       console.log("imageStr = ", imageStr);
-//       this.setState({
-//         img: base64Flag + imageStr,
-//       });
-//     });
-// }

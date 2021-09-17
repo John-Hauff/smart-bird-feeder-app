@@ -40,10 +40,6 @@ const Welcome = () => {
       {/* Changed style to "light" to keep status bar visible */}
       <StatusBar style="light" />
       <InnerContainer>
-        {/* <WelcomeImage
-          resizeMode="cover"
-          source={require("./../assets/bird_img_2.jpeg")}
-        /> */}
         <MyImage resizeMode="cover" />
         <WelcomeContainer>
           <PageTitle welcome={true}>
