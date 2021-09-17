@@ -51,7 +51,7 @@ export const PageLogo = styled.Image`
   border-width: 2px;
   border-color: ${secondary};
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: -15px;
 `;
 
 // Styles for user's avatar (profile pic)
@@ -87,7 +87,7 @@ export const PageTitle = styled.Text`
 
 export const SubTitle = styled.Text`
   font-size: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   letter-spacing: 1px;
   font-weight: bold;
   color: ${tertiary};
@@ -156,7 +156,7 @@ export const ButtonText = styled.Text`
 export const MsgBox = styled.Text`
   text-align: center;
   font-size: 13px;
-  color: ${(props) => (props.type == "SUCCESS" ? "#10B981" : "#EF4444")};
+  color: ${(props) => (props.type == "SUCCESS" ? green : red)};
 `;
 
 // Styles a horizontal line to break up the page
@@ -172,7 +172,7 @@ export const ExtraView = styled.View`
   justify-content: center;
   flex-direction: row;
   align-items: center;
-  padding: 10px;
+  padding: 0px;
 `;
 
 export const ExtraText = styled.Text`

@@ -14,6 +14,8 @@ import {
   Avatar,
 } from "./../components/styles";
 
+import MyImage from "../components/MyImage";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { CredentialsContext } from "../components/CredentialsContext";
@@ -23,10 +25,7 @@ const Welcome = () => {
   const { storedCredentials, setStoredCredentials } = useContext(
     CredentialsContext
   );
-  const { name, email, photoUrl } = storedCredentials;
-  const avatarImg = photoUrl
-    ? { uri: photoUrl }
-    : require("./../assets/birdman.jpg");
+  const { name, email } = storedCredentials;
 
   const clearLogin = () => {
     AsyncStorage.removeItem("smartBirdFeederCredentials")
@@ -41,10 +40,11 @@ const Welcome = () => {
       {/* Changed style to "light" to keep status bar visible */}
       <StatusBar style="light" />
       <InnerContainer>
-        <WelcomeImage
+        {/* <WelcomeImage
           resizeMode="cover"
           source={require("./../assets/bird_img_2.jpeg")}
-        />
+        /> */}
+        <MyImage resizeMode="cover" />
         <WelcomeContainer>
           <PageTitle welcome={true}>
             Welcome to the Smart Bird Feeder App!
