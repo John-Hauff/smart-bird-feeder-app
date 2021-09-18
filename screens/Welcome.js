@@ -12,15 +12,17 @@ import {
   WelcomeContainer,
   WelcomeImage,
   Avatar,
+  ExtraText,
+  ExtraView,
+  TextLink,
+  TextLinkContent,
 } from "./../components/styles";
-
-import MyImage from "../components/MyImage";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { CredentialsContext } from "../components/CredentialsContext";
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   // Context variables
   const { storedCredentials, setStoredCredentials } = useContext(
     CredentialsContext
@@ -40,7 +42,10 @@ const Welcome = () => {
       {/* Changed style to "light" to keep status bar visible */}
       <StatusBar style="light" />
       <InnerContainer>
-        <MyImage resizeMode="cover" />
+        <WelcomeImage
+          resizeMode="cover"
+          source={require("./../assets/bird_img_2.jpeg")}
+        />
         <WelcomeContainer>
           <PageTitle welcome={true}>
             Welcome to the Smart Bird Feeder App!
@@ -53,9 +58,16 @@ const Welcome = () => {
             {/* Insert the style component for a button */}
             <StyledButton
               // Take the user back to Login screen upon selection of Logout button
-              onPress={clearLogin}
+              onPress={() => navigation.navigate("Bird Memories")}
             >
               {/* Insert the styled button text */}
+              <ButtonText>View Bird Memories</ButtonText>
+            </StyledButton>
+
+            <StyledButton
+              // Take the user back to Login screen upon selection of Logout button
+              onPress={clearLogin}
+            >
               <ButtonText>Logout</ButtonText>
             </StyledButton>
           </StyledFormArea>

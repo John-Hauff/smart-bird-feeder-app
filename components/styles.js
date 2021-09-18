@@ -14,6 +14,7 @@ export const Colors = {
   brand: "#6D28D9",
   green: "#10B981",
   red: "#EF4444",
+  black: "#000000",
 };
 
 // Create an object for each color so we can refer to each by name
@@ -80,6 +81,10 @@ export const PageTitle = styled.Text`
 
   ${(props) =>
     props.welcome &&
+    `
+    font-size: 35px;
+  ` &&
+    props.birdMemories &&
     `
     font-size: 35px;
   `}

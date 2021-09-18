@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "../screens/Login";
 import Signup from "../screens/Signup";
 import Welcome from "../screens/Welcome";
+import BirdMemories from "../screens/BirdMemories";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,11 +35,14 @@ const RootStack = () => {
           >
             {/* Immediately move to Welcome screen if storedCredentials is not null */}
             {storedCredentials ? (
-              <Stack.Screen
-                options={{ headerTintColor: "#FFFFFF" }}
-                name="Welcome"
-                component={Welcome}
-              />
+              <>
+                <Stack.Screen
+                  options={{ headerTintColor: "#FFFFFF" }}
+                  name="Welcome"
+                  component={Welcome}
+                />
+                <Stack.Screen name="Bird Memories" component={BirdMemories} />
+              </>
             ) : (
               <>
                 {/* Otherwise, return stack of the Login and Signup screens */}

@@ -37,9 +37,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { CredentialsContext } from "../components/CredentialsContext";
-import { DarkTheme } from "@react-navigation/native";
 
-// Use the brand color for icons
 const { brand, darkLight, primary } = Colors;
 
 const Signup = ({ navigation }) => {

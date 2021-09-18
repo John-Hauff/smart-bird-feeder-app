@@ -1,8 +1,10 @@
 import React, { useState, useEffect, Component } from "react";
 
-import { Image } from "react-native";
+import { Image, ActivityIndicator, Dimensions } from "react-native";
 
 import { encode as btoa } from "base-64";
+
+import { Colors } from "../components/styles";
 
 function arrayBufferToBase64(buffer) {
   let binary = "";
@@ -26,32 +28,41 @@ function componentDidMount(setImage, isFetching, setIsFetching) {
     });
 }
 
-const MyImage = () => {
+const BirdMemory = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [image, setImage] = useState({ img: "" });
+
+  const { black } = Colors;
+  const win = Dimensions.get("window");
+
+  // Get ratio to scale image height
+  const ratio = win.width / 1280; // 1280 is width of actual image
 
   useEffect(() => {
     componentDidMount(setImage, isFetching, setIsFetching);
   }, []);
 
-  return (
-    image && (
-      // TODO: Make style in styles.js for bird memory Image component
-      // (temp style is from Image component)
-      <Image
-        style={{
-          marginTop: 100,
-          width: 300,
-          height: 300,
-          borderWidth: 1,
-          borderColor: "gray",
-        }}
-        source={
-          isFetching ? require("../assets/placeholder.png") : { uri: image.img }
-        }
-      />
-    )
+  return image && !isFetching ? (
+    // TODO: Make style in styles.js for bird memory Image component
+    // (temp style is from Image component)
+    <Image
+      style={{
+        marginTop: 50,
+        width: win.width,
+        height: 720 * ratio,
+        borderWidth: 1,
+        borderColor: black,
+        resizeMode: "contain",
+        alignItems: "center",
+      }}
+      // source={
+      //   isFetching ? require("../assets/placeholder.png") : { uri: image.img }
+      // }
+      source={{ uri: image.img }}
+    />
+  ) : (
+    <ActivityIndicator size="large" color={black} />
   );
 };
 
-export default MyImage;
+export default BirdMemory;
