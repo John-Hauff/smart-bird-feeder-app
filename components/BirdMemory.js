@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Image, ActivityIndicator, Dimensions } from "react-native";
 
@@ -13,19 +13,22 @@ function arrayBufferToBase64(buffer) {
   return btoa(binary);
 }
 
-function componentDidMount(setImage, isFetching, setIsFetching) {
+function componentDidMount(setImage, setIsFetching) {
   let base64Flag = "data:image/jpeg;base64,";
   let imageStr = "";
 
-  const url =
-    "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
+  // const url =
+  //   "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
+  const url = "http://localhost:3000/user/get-bird-memory";
+
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
       imageStr = arrayBufferToBase64(data.img.data.data);
       setImage({ img: base64Flag + imageStr });
       setIsFetching(false);
-    });
+    })
+    .catch((err) => console.log(err)); // host server not found (or bad network, likely)
 }
 
 const BirdMemory = () => {
@@ -39,7 +42,7 @@ const BirdMemory = () => {
   const ratio = win.width / 1280; // 1280 is width of actual image
 
   useEffect(() => {
-    componentDidMount(setImage, isFetching, setIsFetching);
+    componentDidMount(setImage, setIsFetching);
   }, []);
 
   return image && !isFetching ? (
@@ -47,17 +50,11 @@ const BirdMemory = () => {
     // (temp style is from Image component)
     <Image
       style={{
-        marginTop: 50,
         width: win.width,
         height: 720 * ratio,
         borderWidth: 1,
         borderColor: black,
-        resizeMode: "contain",
-        alignItems: "center",
       }}
-      // source={
-      //   isFetching ? require("../assets/placeholder.png") : { uri: image.img }
-      // }
       source={{ uri: image.img }}
     />
   ) : (

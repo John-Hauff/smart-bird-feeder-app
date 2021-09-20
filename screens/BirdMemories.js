@@ -13,8 +13,14 @@ import {
 } from "./../components/styles";
 
 import BirdMemory from "../components/BirdMemory";
+import axios from "axios";
 
 const BirdMemories = ({ navigation }) => {
+  // Handle moving to next bird memory in the image gallery
+  const handleNext = () => {
+    // axios.get;
+  };
+
   return (
     <>
       {/* Changed style to "dark" to keep status bar visible */}
@@ -25,8 +31,15 @@ const BirdMemories = ({ navigation }) => {
           <StyledFormArea>
             {/* Insert styled horizontal line component */}
             <Line />
-            <BirdMemory resizeMode="cover" />
+            <BirdMemory />
             {/* Insert the style component for a button */}
+            <StyledButton
+              // Load the next bird memory
+              onPress={() => navigation.navigate("Welcome")}
+            >
+              {/* Insert the styled button text */}
+              <ButtonText>Next</ButtonText>
+            </StyledButton>
             <StyledButton
               // Take the user back to Welcome screen upon selection of button
               onPress={() => navigation.navigate("Welcome")}
