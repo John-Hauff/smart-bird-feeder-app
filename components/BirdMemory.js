@@ -17,9 +17,9 @@ function componentDidMount(setImage, setIsFetching) {
   let base64Flag = "data:image/jpeg;base64,";
   let imageStr = "";
 
-  // const url =
-  //   "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
-  const url = "http://localhost:3000/user/get-bird-memory";
+  const url =
+    "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
+  // const url = "http://localhost:3000/user/get-bird-memory";
 
   fetch(url)
     .then((res) => res.json())

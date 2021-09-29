@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
 // import RootStack, which has navigator for screens
-import RootStack from "./navigators/RootStack";
+// import RootStack from "./navigators/RootStack";
+
+import RootTab from "./navigators/RootTab";
 
 import AppLoading from "expo-app-loading";
 
@@ -40,7 +42,8 @@ export default function App() {
     <CredentialsContext.Provider
       value={{ storedCredentials, setStoredCredentials }}
     >
-      <RootStack />
+      {/* <RootStack /> */}
+      <RootTab />
     </CredentialsContext.Provider>
   );
 }
