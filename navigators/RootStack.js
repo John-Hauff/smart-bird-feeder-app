@@ -9,6 +9,7 @@ import Login from "../screens/Login";
 import Signup from "../screens/Signup";
 import Welcome from "../screens/Welcome";
 import BirdMemories from "../screens/BirdMemories";
+import LivestreamScreen from "../screens/Livestream";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ const RootStack = () => {
                   component={Welcome}
                 />
                 <Stack.Screen name="Bird Memories" component={BirdMemories} />
+                <Stack.Screen name="Livestream" component={LivestreamScreen} />
               </>
             ) : (
               <>

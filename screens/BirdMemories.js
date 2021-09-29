@@ -38,6 +38,13 @@ const BirdMemories = ({ navigation }) => {
               onPress={() => navigation.navigate("Home")}
             >
               {/* Insert the styled button text */}
+              <ButtonText>Previous</ButtonText>
+            </StyledButton>
+            <StyledButton
+              // Load the next bird memory
+              onPress={() => navigation.navigate("Welcome")}
+            >
+              {/* Insert the styled button text */}
               <ButtonText>Next</ButtonText>
             </StyledButton>
             <StyledButton

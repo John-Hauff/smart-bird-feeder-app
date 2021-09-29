@@ -52,11 +52,19 @@ const Welcome = ({ navigation }) => {
             <Line />
             {/* Insert the style component for a button */}
             <StyledButton
-              // Take the user back to Login screen upon selection of Logout button
+              // Take the user to Bird Memories screen upon selection of button
               onPress={() => navigation.navigate("Bird Memories")}
             >
               {/* Insert the styled button text */}
               <ButtonText>View Bird Memories</ButtonText>
+            </StyledButton>
+
+            <StyledButton
+              // Take the user to Livestream Screen upon selection of button
+              onPress={() => navigation.navigate("Livestream")}
+            >
+              {/* Insert the styled button text */}
+              <ButtonText>View Livestream</ButtonText>
             </StyledButton>
 
             <StyledButton

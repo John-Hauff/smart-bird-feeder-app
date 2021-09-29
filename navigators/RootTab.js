@@ -14,6 +14,7 @@ import BirdMemories from "../screens/BirdMemories";
 const Tab = createBottomTabNavigator();
 
 import { CredentialsContext } from "../components/CredentialsContext";
+import LivestreamScreen from "../screens/Livestream";
 
 const RootTab = () => {
   return (
@@ -53,6 +54,7 @@ const RootTab = () => {
                   component={Welcome}
                 />
                 <Tab.Screen name="Bird Memories" component={BirdMemories} />
+                <Tab.Screen name="Livestream" component={LivestreamScreen} />
               </>
             ) : (
               <>

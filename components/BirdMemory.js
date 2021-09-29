@@ -54,6 +54,7 @@ const BirdMemory = () => {
         height: 720 * ratio,
         borderWidth: 1,
         borderColor: black,
+        resizeMode: "contain",
       }}
       source={{ uri: image.img }}
     />
