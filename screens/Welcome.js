@@ -11,11 +11,6 @@ import {
   Line,
   WelcomeContainer,
   WelcomeImage,
-  Avatar,
-  ExtraText,
-  ExtraView,
-  TextLink,
-  TextLinkContent,
 } from "./../components/styles";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

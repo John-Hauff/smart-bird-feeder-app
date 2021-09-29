@@ -35,14 +35,14 @@ const BirdMemories = ({ navigation }) => {
             {/* Insert the style component for a button */}
             <StyledButton
               // Load the next bird memory
-              onPress={() => navigation.navigate("Welcome")}
+              onPress={() => navigation.navigate("Home")}
             >
               {/* Insert the styled button text */}
               <ButtonText>Next</ButtonText>
             </StyledButton>
             <StyledButton
-              // Take the user back to Welcome screen upon selection of button
-              onPress={() => navigation.navigate("Welcome")}
+              // Take the user back to Home screen upon selection of button
+              onPress={() => navigation.navigate("Home")}
             >
               {/* Insert the styled button text */}
               <ButtonText>Go Home</ButtonText>
