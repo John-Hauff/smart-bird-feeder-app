@@ -31,11 +31,6 @@ function componentDidMount(setImage, setIsFetching) {
     data = {img: { data: 0vgneribv2847x//vfr7, contentType: "image/jpeg"}}
     */
     .then((data) => {
-      // console.log(data["6144fa5f6dcca1c92019cd8c"]._id);
-      // for (let i in data) {
-      //   console.log(data[i]._id);
-      //   // imageStr = arrayBufferToBase64(data[i].img.data.data);
-      // }
       setImage({ img: base64Flag + imageStr });
       setIsFetching(false);
     })
