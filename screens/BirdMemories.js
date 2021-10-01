@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-} from "react-native";
+import { TouchableOpacity, Image, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import {
@@ -19,25 +14,12 @@ import {
 } from "./../components/styles";
 
 import { encode as btoa } from "base-64";
-import BirdMemory from "../components/BirdMemory";
 import axios from "axios";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 
 const { width } = Dimensions.get("window");
 const SPACING = 10;
 const THUMB_SIZE = 80;
-
-const IMAGES = {
-  // image1: <BirdMemory />,
-  image1: require("../assets/gallery-imgs/img1.jpg"),
-  image2: require("../assets/gallery-imgs/img2.jpg"),
-  image3: require("../assets/gallery-imgs/img3.jpg"),
-  image4: require("../assets/gallery-imgs/img4.jpg"),
-  image5: require("../assets/gallery-imgs/img5.jpg"),
-  image6: require("../assets/gallery-imgs/img6.jpg"),
-  image7: require("../assets/gallery-imgs/img7.jpg"),
-  image8: require("../assets/gallery-imgs/img8.jpg"),
-};
 
 function arrayBufferToBase64(buffer) {
   let binary = "";
@@ -48,7 +30,6 @@ function arrayBufferToBase64(buffer) {
 
 function componentDidMount(setImages, setIsFetching) {
   let base64Flag = "data:image/jpeg;base64,";
-  let imageStr = "";
 
   const url =
     "https://smart-bird-feeder-api.herokuapp.com/user/get-bird-memory";
@@ -68,9 +49,12 @@ function componentDidMount(setImages, setIsFetching) {
         imageStrs.push(arrayBufferToBase64(data[i].img.data.data));
         idStrs.push("" + counter);
 
+        // console.log(data["61575c7fe9b7cf3a574f8ac8"].img.species);
         birdMemImages.push({
           id: idStrs[counter - 1],
           image: { uri: base64Flag + imageStrs[counter - 1] },
+          species: data[i].img.species ? data[i].img.species : "rat with wings",
+          creationTime: data[i].createdAt ? data[i].createdAt : "5 O'clock",
         });
 
         counter++;
@@ -87,16 +71,7 @@ const BirdMemories = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [indexSelected, setIndexSelected] = useState(0);
 
-  const [images, setImages] = useState([
-    { id: "1", image: IMAGES.image1 },
-    { id: "2", image: IMAGES.image2 },
-    { id: "3", image: IMAGES.image3 },
-    { id: "4", image: IMAGES.image4 },
-    { id: "5", image: IMAGES.image5 },
-    { id: "6", image: IMAGES.image6 },
-    { id: "7", image: IMAGES.image7 },
-    { id: "8", image: IMAGES.image8 },
-  ]);
+  const [images, setImages] = useState([]);
 
   const carouselRef = useRef();
   const flatListRef = useRef();
@@ -140,7 +115,7 @@ const BirdMemories = () => {
           onSnapToItem={(index) => onSelect(index)}
           renderItem={({ item, index }) =>
             // TODO: Swap out Image for custom StyledBirdMemory later
-            image && !isFetching ? (
+            images && !isFetching ? (
               <Image
                 key={index}
                 style={{ width: "100%", height: "100%" }}
@@ -148,7 +123,12 @@ const BirdMemories = () => {
                 source={item.image}
               />
             ) : (
-              <ActivityIndicator size="large" color={black} />
+              // This Image will not show, for some reason (same with thumbnail)
+              <Image
+                style={{ width: "100%", height: "100%" }}
+                resizeMode="contain"
+                source={require("../assets/placeholder.png")}
+              />
             )
           }
         />
@@ -176,7 +156,7 @@ const BirdMemories = () => {
             onPress={() => onTouchThumbnail(index)}
           >
             {/* TODO: Swap out Image for custom StyledBirdMemory later */}
-            {image && !isFetching ? (
+            {images && !isFetching ? (
               <Image
                 style={{
                   width: THUMB_SIZE,
@@ -189,7 +169,17 @@ const BirdMemories = () => {
                 source={item.image}
               />
             ) : (
-              <ActivityIndicator size="large" color={black} />
+              <Image
+                style={{
+                  width: THUMB_SIZE,
+                  height: THUMB_SIZE,
+                  marginRight: SPACING,
+                  borderRadius: 16,
+                  borderWidth: index === indexSelected ? 4 : 0.75,
+                  borderColor: index === indexSelected ? "orange" : "black",
+                }}
+                source={require("../assets/placeholder.png")}
+              />
             )}
           </TouchableOpacity>
         )}
@@ -198,7 +188,18 @@ const BirdMemories = () => {
       {/* Display for total # of imgs & cur img index # */}
       <ImageIndexTextContainer>
         <ImageIndexText>
-          {indexSelected + 1}/{images.length}
+          {/* Display current image index out of total # images, or display nothing when loading imgs */}
+          {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
+        </ImageIndexText>
+      </ImageIndexTextContainer>
+
+      <ImageIndexTextContainer>
+        <ImageIndexText>
+          {!isFetching && images[indexSelected].species}
+        </ImageIndexText>
+        <ImageIndexText>
+          {/* TODO: style date & time tag */}
+          {!isFetching && images[indexSelected].creationTime}
         </ImageIndexText>
       </ImageIndexTextContainer>
     </BirdMemoriesContainer>
