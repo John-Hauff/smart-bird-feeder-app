@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { CardView } from "react-native-simple-card-view";
@@ -81,6 +82,42 @@ const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
+// Mongoose Date type format: 2021-10-01T20:52:38.080Z
+// formattedDateTime format: <month_name> DD, YYYY · hh:mm:ss
+const formatDateTime = (creationTime) => {
+  let months = {};
+  months["01"] = "January";
+  months["02"] = "February";
+  months["03"] = "March";
+  months["04"] = "April";
+  months["05"] = "May";
+  months["06"] = "June";
+  months["07"] = "July";
+  months["08"] = "August";
+  months["09"] = "September";
+  months["10"] = "October";
+  months["11"] = "November";
+  months["12"] = "December";
+
+  // Extract the date from the createdAt object
+  let year = creationTime.split("-")[0];
+  let month = creationTime.split("-")[1];
+  let day = creationTime.split("-")[2].split("T")[0];
+  // console.log("year: " + year + " \nmonth: " + month + "\nday: " + day);
+
+  let date = months[month] + " " + day + ", " + year;
+
+  // Extract the time from the createdAt object
+  let hour = creationTime.split("T")[1].split(":")[0];
+  let minute = creationTime.split("T")[1].split(":")[1];
+  let second = creationTime.split("T")[1].split(":")[2].split(".")[0];
+  // console.log("hour: " + hour + " \nmin: " + minute + "\nsec: " + second);
+
+  let time = hour + ":" + minute + ":" + second;
+
+  return date + " · " + time;
+};
+
 const BirdMemories = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [indexSelected, setIndexSelected] = useState(0);
@@ -113,47 +150,11 @@ const BirdMemories = () => {
     });
   };
 
-  // Mongoose Date type format: 2021-10-01T20:52:38.080Z
-  // formattedDateTime format: <month_name> DD, YYYY · hh:mm:ss
-  const formatDateTime = (creationTime) => {
-    let months = {};
-    months["01"] = "January";
-    months["02"] = "February";
-    months["03"] = "March";
-    months["04"] = "April";
-    months["05"] = "May";
-    months["06"] = "June";
-    months["07"] = "July";
-    months["08"] = "August";
-    months["09"] = "September";
-    months["10"] = "October";
-    months["11"] = "November";
-    months["12"] = "December";
-
-    // Extract the date from the createdAt object
-    let year = creationTime.split("-")[0];
-    let month = creationTime.split("-")[1];
-    let day = creationTime.split("-")[2].split("T")[0];
-    // console.log("year: " + year + " \nmonth: " + month + "\nday: " + day);
-
-    let date = months[month] + " " + day + ", " + year;
-
-    // Extract the time from the createdAt object
-    let hour = creationTime.split("T")[1].split(":")[0];
-    let minute = creationTime.split("T")[1].split(":")[1];
-    let second = creationTime.split("T")[1].split(":")[2].split(".")[0];
-    // console.log("hour: " + hour + " \nmin: " + minute + "\nsec: " + second);
-
-    let time = hour + ":" + minute + ":" + second;
-
-    return date + " · " + time;
-  };
-
   useEffect(() => {
     componentDidMount(setImages, setIsFetching);
   }, []);
 
-  return (
+  return !isFetching ? (
     <BirdMemoriesContainer>
       <ScrollView
         contentContainerStyle={{
@@ -229,23 +230,26 @@ const BirdMemories = () => {
         </ImageIndexTextContainer>
 
         <BirdMemoryDescContainer>
-          <CardView>
-            <BirdMemoryDescription>
-              {/* TODO: style date & time tag */}
-              {!isFetching && "Species: " + images[indexSelected].species}
-            </BirdMemoryDescription>
-            <BirdMemoryDescription>
-              {/* TODO: style date & time tag */}
-              {!isFetching &&
-                formatDateTime(images[indexSelected].creationTime)}
-            </BirdMemoryDescription>
-          </CardView>
+          {!isFetching ? (
+            <CardView>
+              <BirdMemoryDescription>
+                {/* TODO: style date & time tag */}
+                {"Species: " + images[indexSelected].species}
+              </BirdMemoryDescription>
+              <BirdMemoryDescription>
+                {/* TODO: style date & time tag */}
+                {formatDateTime(images[indexSelected].creationTime)}
+              </BirdMemoryDescription>
+            </CardView>
+          ) : (
+            <BirdMemoryDescription></BirdMemoryDescription>
+          )}
         </BirdMemoryDescContainer>
 
         {/* console.log(images[indexSelected].creationTime) &&
-              images[indexSelected].creationTime.split("T")[0] +
-                " · " +
-                images[indexSelected].creationTime.split("T")[1].split(".")[0] */}
+                  images[indexSelected].creationTime.split("T")[0] +
+                    " · " +
+                    images[indexSelected].creationTime.split("T")[1].split(".")[0] */}
 
         {/* Use FlatList component to list thumbnails of memories */}
         <MyFlatList
@@ -291,25 +295,25 @@ const BirdMemories = () => {
         />
       </ScrollView>
     </BirdMemoriesContainer>
+  ) : (
+    <BirdMemoriesContainer>
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: "center",
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <BirdMemoriesPageTitle birdMemories={true}>
+          Bird Memories Gallery
+        </BirdMemoriesPageTitle>
+
+        <ActivityIndicator size="large" color={black} />
+      </ScrollView>
+    </BirdMemoriesContainer>
   );
-  // return (
-  //   <BirdMemoriesContainer>
-  //     <CardViewWithImage
-  //       width={300}
-  //       content={
-  //         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. At aut distinctio!"
-  //       }
-  //       source={{ uri: "https://placeimg.com/640/480/tech" }}
-  //       title={"Hello World!"}
-  //       imageWidth={100}
-  //       imageHeight={100}
-  //       onPress={() => console.log("CardViewWithImage Clicked!")}
-  //       roundedImage={true}
-  //       roundedImageValue={50}
-  //       imageMargin={{ top: 10 }}
-  //     />
-  //   </BirdMemoriesContainer>
-  // );
 };
 
 export default BirdMemories;

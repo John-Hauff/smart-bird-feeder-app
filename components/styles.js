@@ -135,7 +135,7 @@ export const SubTitle = styled.Text`
 `;
 
 export const BirdMemoryDescription = styled.Text`
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 5px;
   letter-spacing: 1px;
   font-weight: normal;
