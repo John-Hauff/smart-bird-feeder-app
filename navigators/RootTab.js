@@ -49,18 +49,34 @@ const RootTab = () => {
             {storedCredentials ? (
               <>
                 <Tab.Screen
-                  options={{ headerTintColor: "#FFFFFF" }}
+                  options={{ headerShown: false }}
                   name="Home"
                   component={Welcome}
                 />
-                <Tab.Screen name="Bird Memories" component={BirdMemories} />
-                <Tab.Screen name="Livestream" component={LivestreamScreen} />
+                <Tab.Screen
+                  name="Bird Memories"
+                  options={{ headerShown: false }}
+                  component={BirdMemories}
+                />
+                <Tab.Screen
+                  name="Livestream"
+                  options={{ headerShown: false }}
+                  component={LivestreamScreen}
+                />
               </>
             ) : (
               <>
                 {/* Otherwise, return Tab Navigation for the Login and Signup screens */}
-                <Tab.Screen name="Login" component={Login} />
-                <Tab.Screen name="Signup" component={Signup} />
+                <Tab.Screen
+                  name="Login"
+                  options={{ headerShown: false }}
+                  component={Login}
+                />
+                <Tab.Screen
+                  name="Signup"
+                  options={{ headerShown: false }}
+                  component={Signup}
+                />
               </>
             )}
           </Tab.Navigator>

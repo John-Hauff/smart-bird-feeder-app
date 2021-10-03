@@ -130,9 +130,15 @@ const BirdMemories = () => {
 
   const { black, primary, brand } = Colors;
 
-  const onRefresh = useCallback(() => {
+  /*
+    onRefresh will fetch the bird memory documents from the API again so the screen may update
+    Note: refreshing is a controlled prop, so it must be set to true in the onRefresh function,
+    otherwise the refresh indicator will stop immediately.
+   */
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
+    componentDidMount(setImages, setIsFetching);
   }, []);
 
   const onTouchThumbnail = (touched) => {
@@ -155,82 +161,73 @@ const BirdMemories = () => {
   }, []);
 
   return !isFetching ? (
-    <BirdMemoriesContainer>
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-          alignItems: "center",
-        }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+    <>
+      <StatusBar style="dark" />
+      <BirdMemoriesContainer>
         <BirdMemoriesPageTitle birdMemories={true}>
           Bird Memories Gallery
         </BirdMemoriesPageTitle>
 
-        {/* Carousel View */}
-        <CarouselContainer>
-          <Carousel
-            ref={carouselRef}
-            layout="default"
-            data={images}
-            sliderWidth={width}
-            itemWidth={width}
-            // Fire callback when index of img item changes; onSelect updates cur index
-            onSnapToItem={(index) => onSelect(index)}
-            renderItem={({ item, index }) =>
-              // TODO: Swap out Image for custom StyledBirdMemory later
-              images && !isFetching ? (
+        <Line />
+
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: "center",
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {/* Carousel View */}
+          <CarouselContainer>
+            <Carousel
+              ref={carouselRef}
+              layout="default"
+              data={images}
+              sliderWidth={width}
+              itemWidth={width}
+              // Fire callback when index of img item changes; onSelect updates cur index
+              onSnapToItem={(index) => onSelect(index)}
+              renderItem={({ item, index }) => (
+                // TODO: Swap out Image for custom StyledBirdMemory later
                 <Image
                   key={index}
                   style={{ width: "100%", height: "100%" }}
                   resizeMode="contain"
                   source={item.image}
                 />
-              ) : (
-                // This Image will not show, for some reason (same with thumbnail)
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  resizeMode="contain"
-                  source={require("../assets/placeholder.png")}
-                />
-              )
-            }
-          />
-        </CarouselContainer>
+              )}
+            />
+          </CarouselContainer>
 
-        <View
-          style={{
-            justifyContent: "space-between",
-            backgroundColor: { primary },
-          }}
-        >
-          <Pagination
-            inactiveDotColor="gray"
-            dotColor={brand}
-            activeDotIndex={indexSelected}
-            dotsLength={images.length}
-            animatedDuration={150}
-            inactiveDotScale={0.75}
-            carouselRef={carouselRef}
-            tappableDots={true}
-          />
-        </View>
+          <View
+            style={{
+              justifyContent: "space-between",
+              backgroundColor: { primary },
+            }}
+          >
+            <Pagination
+              inactiveDotColor="gray"
+              dotColor={brand}
+              activeDotIndex={indexSelected}
+              dotsLength={images.length}
+              animatedDuration={150}
+              inactiveDotScale={0.75}
+              carouselRef={carouselRef}
+              tappableDots={true}
+            />
+          </View>
 
-        {/* Display for total # of imgs & cur img index # */}
-        <ImageIndexTextContainer>
-          <ImageIndexText>
-            {/* Display current image index out of total # images, or display nothing when loading imgs */}
-            {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
-          </ImageIndexText>
-        </ImageIndexTextContainer>
+          {/* Display for total # of imgs & cur img index # */}
+          <ImageIndexTextContainer>
+            <ImageIndexText>
+              {/* Display current image index out of total # images, or display nothing when loading imgs */}
+              {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
+            </ImageIndexText>
+          </ImageIndexTextContainer>
 
-        <BirdMemoryDescContainer>
-          {!isFetching ? (
+          <BirdMemoryDescContainer>
             <CardView>
               <BirdMemoryDescription>
                 {/* TODO: style date & time tag */}
@@ -241,31 +238,28 @@ const BirdMemories = () => {
                 {formatDateTime(images[indexSelected].creationTime)}
               </BirdMemoryDescription>
             </CardView>
-          ) : (
             <BirdMemoryDescription></BirdMemoryDescription>
-          )}
-        </BirdMemoryDescContainer>
+          </BirdMemoryDescContainer>
 
-        {/* console.log(images[indexSelected].creationTime) &&
+          {/* console.log(images[indexSelected].creationTime) &&
                   images[indexSelected].creationTime.split("T")[0] +
                     " · " +
                     images[indexSelected].creationTime.split("T")[1].split(".")[0] */}
 
-        {/* Use FlatList component to list thumbnails of memories */}
-        <MyFlatList
-          ref={flatListRef}
-          horizontal={true}
-          data={images}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: SPACING }}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => onTouchThumbnail(index)}
-            >
-              {/* TODO: Swap out Image for custom StyledBirdMemory later */}
-              {images && !isFetching ? (
+          {/* Use FlatList component to list thumbnails of memories */}
+          <MyFlatList
+            ref={flatListRef}
+            horizontal={true}
+            data={images}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: SPACING }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => onTouchThumbnail(index)}
+              >
+                {/* TODO: Swap out Image for custom StyledBirdMemory later */}
                 <Image
                   style={{
                     width: THUMB_SIZE,
@@ -277,42 +271,37 @@ const BirdMemories = () => {
                   }}
                   source={item.image}
                 />
-              ) : (
-                <Image
-                  style={{
-                    width: THUMB_SIZE,
-                    height: THUMB_SIZE,
-                    marginRight: SPACING,
-                    borderRadius: 16,
-                    borderWidth: index === indexSelected ? 4 : 0.75,
-                    borderColor: index === indexSelected ? brand : "black",
-                  }}
-                  source={require("../assets/placeholder.png")}
-                />
-              )}
-            </TouchableOpacity>
-          )}
-        />
-      </ScrollView>
-    </BirdMemoriesContainer>
+              </TouchableOpacity>
+            )}
+          />
+        </ScrollView>
+      </BirdMemoriesContainer>
+    </>
   ) : (
-    <BirdMemoriesContainer>
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-          alignItems: "center",
-        }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+    // Alternate screen render for ActivityIndicator
+    // to show while images are being fetched and processed
+    <>
+      <StatusBar style="dark" />
+      <BirdMemoriesContainer>
         <BirdMemoriesPageTitle birdMemories={true}>
           Bird Memories Gallery
         </BirdMemoriesPageTitle>
 
-        <ActivityIndicator size="large" color={black} />
-      </ScrollView>
-    </BirdMemoriesContainer>
+        <Line />
+
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: "center",
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <ActivityIndicator size="large" color={black} />
+        </ScrollView>
+      </BirdMemoriesContainer>
+    </>
   );
 };
 

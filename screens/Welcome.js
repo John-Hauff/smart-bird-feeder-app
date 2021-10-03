@@ -19,9 +19,8 @@ import { CredentialsContext } from "../components/CredentialsContext";
 
 const Welcome = ({ navigation }) => {
   // Context variables
-  const { storedCredentials, setStoredCredentials } = useContext(
-    CredentialsContext
-  );
+  const { storedCredentials, setStoredCredentials } =
+    useContext(CredentialsContext);
   const { name, email } = storedCredentials;
 
   const clearLogin = () => {
