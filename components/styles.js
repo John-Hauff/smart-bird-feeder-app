@@ -7,6 +7,9 @@ import { Dimensions } from "react-native";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const win = Dimensions.get("window");
+const WIN_WIDTH = Dimensions.get("window").width;
+const SLIDER_WIDTH = Dimensions.get("window").width + 80;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 // Get ratio to scale image height
 const ratio = win.width / 1280; // 1280 is width of actual image
@@ -79,6 +82,7 @@ export const WelcomeImage = styled.Image`
   max-width: 100%;
 `;
 
+// DEPRECATED
 export const StyledBirdMemory = styled.Image`
   width: ${win.width + "px"};
   height: ${720 * ratio + "px"};
@@ -96,20 +100,17 @@ export const PageTitle = styled.Text`
 `;
 
 export const BirdMemoriesContainer = styled.View`
-  flex: 1;
-  background-color: ${primary};
+  background-color: ${"white"}};
   align-items: center;
 `;
 
 export const CarouselContainer = styled.View`
-  flex: ${1 / 2};
-  margin-top: 20px;
-`;
-
-export const BirdMemoryDescContainer = styled.View`
-  padding: 10px;
+  flex: ${6};
   align-items: center;
-  background-color: ${primary};
+  ${"" /* padding: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"}; */}
+  padding-left: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"};
+  ${"" /* padding-left: 0px; */}
+  padding-top: 20px;
 `;
 
 export const BirdMemoriesPageTitle = styled.Text`
@@ -118,7 +119,6 @@ export const BirdMemoriesPageTitle = styled.Text`
   color: ${brand};
   text-align: center;
   margin-top: 50px;
-  margin-bottom: 25px;
 `;
 
 export const SubTitle = styled.Text`
@@ -129,18 +129,19 @@ export const SubTitle = styled.Text`
   color: ${tertiary};
 `;
 
-export const BirdMemoryDescription = styled.Text`
-  font-size: 20px;
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-  font-weight: normal;
-  text-align: center;
-  color: ${tertiary};
-  ${(props) =>
-    props.bold &&
-    `
-    font-weight: bold;
-  `}
+export const BirdMemorySpeciesText = styled.Text`
+  color: ${black};
+  font-size: 28px;
+  font-weight: bold;
+  padding-left: 20px;
+  padding-top: 10px;
+`;
+
+export const BirdMemoryDescText = styled.Text`
+  color: ${black};
+  font-size: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 export const ImageIndexTextContainer = styled.View`
@@ -148,16 +149,19 @@ export const ImageIndexTextContainer = styled.View`
   padding-horizontal: 32px;
   margin-bottom: 20px;
   align-self: ${"flex-end"};
+  flex: 2;
 `;
 
 export const ImageIndexText = styled.Text`
   color: ${tertiary};
   font-size: 22px;
+  text-align: ${"right"};
 `;
 
 export const MyFlatList = styled.FlatList`
   position: ${"absolute"};
-  bottom: 80px;
+  bottom: 90px;
+  flex: 1;
 `;
 
 export const StyledFormArea = styled.View`
