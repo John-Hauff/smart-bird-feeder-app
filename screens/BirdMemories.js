@@ -65,7 +65,9 @@ function componentDidMount(setImages, setIsFetching) {
           id: idStrs[counter - 1],
           image: { uri: base64Flag + imageStrs[counter - 1] },
           species: data[i].img.species ? data[i].img.species : "rat with wings",
-          creationTime: data[i].createdAt ? data[i].createdAt : "5 O'clock",
+          creationTime: data[i].createdAt
+            ? data[i].createdAt
+            : "It's 5 O'clock somewhere ",
         });
 
         counter++;
@@ -128,7 +130,7 @@ const BirdMemories = () => {
   const carouselRef = useRef();
   const flatListRef = useRef();
 
-  const { black, primary, brand } = Colors;
+  const { black, primary, brand, darkLight } = Colors;
 
   /*
     onRefresh will fetch the bird memory documents from the API again so the screen may update
@@ -140,6 +142,15 @@ const BirdMemories = () => {
     wait(2000).then(() => setRefreshing(false));
     componentDidMount(setImages, setIsFetching);
   }, []);
+
+  // Active dot index should be a number in the range <TBD>
+  const getActiveDotIndex = () => {
+    return (
+      (indexSelected % 3 === 1 && indexSelected) ||
+      (indexSelected % 3 === 2 && indexSelected) ||
+      0
+    );
+  };
 
   const onTouchThumbnail = (touched) => {
     if (touched === indexSelected) return;
@@ -207,15 +218,19 @@ const BirdMemories = () => {
               backgroundColor: { primary },
             }}
           >
+            {/* TODO: toss this pagination into a flatlist */}
             <Pagination
-              inactiveDotColor="gray"
               dotColor={brand}
+              inactiveDotColor={darkLight}
               activeDotIndex={indexSelected}
+              // activeDotIndex={getActiveDotIndex()}
               dotsLength={images.length}
+              // dotsLength={3}
               animatedDuration={150}
               inactiveDotScale={0.75}
               carouselRef={carouselRef}
               tappableDots={true}
+              activeOpacity={1}
             />
           </View>
 
@@ -227,8 +242,8 @@ const BirdMemories = () => {
             </ImageIndexText>
           </ImageIndexTextContainer>
 
-          <BirdMemoryDescContainer>
-            <CardView>
+          <CardView>
+            <BirdMemoryDescContainer>
               <BirdMemoryDescription>
                 {/* TODO: style date & time tag */}
                 {"Species: " + images[indexSelected].species}
@@ -237,14 +252,9 @@ const BirdMemories = () => {
                 {/* TODO: style date & time tag */}
                 {formatDateTime(images[indexSelected].creationTime)}
               </BirdMemoryDescription>
-            </CardView>
-            <BirdMemoryDescription></BirdMemoryDescription>
-          </BirdMemoryDescContainer>
-
-          {/* console.log(images[indexSelected].creationTime) &&
-                  images[indexSelected].creationTime.split("T")[0] +
-                    " · " +
-                    images[indexSelected].creationTime.split("T")[1].split(".")[0] */}
+            </BirdMemoryDescContainer>
+          </CardView>
+          {/* <BirdMemoryDescription></BirdMemoryDescription> */}
 
           {/* Use FlatList component to list thumbnails of memories */}
           <MyFlatList

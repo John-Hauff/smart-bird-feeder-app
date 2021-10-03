@@ -108,13 +108,8 @@ export const CarouselContainer = styled.View`
 
 export const BirdMemoryDescContainer = styled.View`
   padding: 10px;
-  ${
-    "" /* border-color: black;
-  border-width: 2px; */
-  }
   align-items: center;
   background-color: ${primary};
-  ${"" /* box-shadow: 10px 5px 5px black; */}
 `;
 
 export const BirdMemoriesPageTitle = styled.Text`
@@ -156,7 +151,7 @@ export const ImageIndexTextContainer = styled.View`
 `;
 
 export const ImageIndexText = styled.Text`
-  color: ${black};
+  color: ${tertiary};
   font-size: 22px;
 `;
 
