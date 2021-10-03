@@ -1,3 +1,4 @@
+// THIS FILE IS DEPRECATED AND IS NO LONGER BEING USED IN APPLICATION
 import React from "react";
 
 // React Navigation

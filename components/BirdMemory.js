@@ -1,3 +1,4 @@
+// THIS FILE IS DEPRECATED AND IS NO LONGER BEING USED IN APPLICATION
 import React, { useState, useEffect } from "react";
 
 import { ActivityIndicator, Dimensions } from "react-native";

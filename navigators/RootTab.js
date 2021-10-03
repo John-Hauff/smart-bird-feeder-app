@@ -53,12 +53,20 @@ const RootTab = () => {
             >
               <>
                 <Tab.Screen
-                  options={{ headerTintColor: "#FFFFFF" }}
+                  options={{ headerShown: false }}
                   name="Home"
                   component={Welcome}
                 />
-                <Tab.Screen name="Bird Memories" component={BirdMemories} />
-                <Tab.Screen name="Livestream" component={LivestreamScreen} />
+                <Tab.Screen
+                  name="Bird Memories"
+                  options={{ headerShown: false }}
+                  component={BirdMemories}
+                />
+                <Tab.Screen
+                  name="Livestream"
+                  options={{ headerShown: false }}
+                  component={LivestreamScreen}
+                />
               </>
             </Tab.Navigator>
           ) : (

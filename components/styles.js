@@ -2,11 +2,14 @@
 //  https://medium.com/@shanerudolfworktive/7-tips-to-develop-react-native-uis-for-all-screen-sizes-7ec5271be25c
 import styled from "styled-components/native";
 import Constants from "expo-constants";
-import { Dimensions, FlatList } from "react-native";
+import { Dimensions } from "react-native";
 
 const StatusBarHeight = Constants.statusBarHeight;
 
 const win = Dimensions.get("window");
+const WIN_WIDTH = Dimensions.get("window").width;
+const SLIDER_WIDTH = Dimensions.get("window").width + 80;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 // Get ratio to scale image height
 const ratio = win.width / 1280; // 1280 is width of actual image
@@ -24,16 +27,8 @@ export const Colors = {
 };
 
 // Create an object for each color so we can refer to each by name
-const {
-  primary,
-  secondary,
-  tertiary,
-  darkLight,
-  brand,
-  green,
-  red,
-  black,
-} = Colors;
+const { primary, secondary, tertiary, darkLight, brand, green, red, black } =
+  Colors;
 
 // May want to modify padding-top to be platform-specific
 // See expo-status-bar or just use Contants w/ tertiary
@@ -57,23 +52,6 @@ export const WelcomeContainer = styled(InnerContainer)`
   padding: 25px;
   padding-top: 10px;
   justify-content: center;
-`;
-
-export const BirdMemoriesContainer = styled.View`
-  flex: 1;
-  background-color: ${primary};
-  align-items: center;
-`;
-
-export const CarouselContainer = styled.View`
-  flex: ${1 / 2};
-  margin-top: 20px;
-`;
-
-export const BirdMemoryContainer = styled.View`
-  padding: 25px;
-  padding-top: 10px;
-  align-items: center;
 `;
 
 export const PageLogo = styled.Image`
@@ -104,6 +82,7 @@ export const WelcomeImage = styled.Image`
   max-width: 100%;
 `;
 
+// DEPRECATED
 export const StyledBirdMemory = styled.Image`
   width: ${win.width + "px"};
   height: ${720 * ratio + "px"};
@@ -118,20 +97,28 @@ export const PageTitle = styled.Text`
   font-weight: bold;
   color: ${brand};
   padding: 10px;
+`;
 
-  ${(props) =>
-    props.welcome &&
-    `
-    font-size: 35px;
-  `}
+export const BirdMemoriesContainer = styled.View`
+  background-color: ${"white"}};
+  align-items: center;
+`;
+
+export const CarouselContainer = styled.View`
+  flex: ${6};
+  align-items: center;
+  ${"" /* padding: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"}; */}
+  padding-left: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"};
+  ${"" /* padding-left: 0px; */}
+  padding-top: 20px;
 `;
 
 export const BirdMemoriesPageTitle = styled.Text`
   font-size: 30px;
   font-weight: bold;
+  color: ${brand};
   text-align: center;
   margin-top: 50px;
-  margin-bottom: 25px;
 `;
 
 export const SubTitle = styled.Text`
@@ -142,29 +129,39 @@ export const SubTitle = styled.Text`
   color: ${tertiary};
 `;
 
-export const BirdMemoryDescription = styled.Text`
+export const BirdMemorySpeciesText = styled.Text`
+  color: ${black};
+  font-size: 28px;
+  font-weight: bold;
+  padding-left: 20px;
+  padding-top: 10px;
+`;
+
+export const BirdMemoryDescText = styled.Text`
+  color: ${black};
   font-size: 18px;
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-  font-weight: normal;
-  text-align: left;
-  color: ${tertiary};
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 export const ImageIndexTextContainer = styled.View`
   margin-top: 0px;
   padding-horizontal: 32px;
+  margin-bottom: 20px;
   align-self: ${"flex-end"};
+  flex: 2;
+`;
+
+export const ImageIndexText = styled.Text`
+  color: ${tertiary};
+  font-size: 22px;
+  text-align: ${"right"};
 `;
 
 export const MyFlatList = styled.FlatList`
   position: ${"absolute"};
-  bottom: 80px;
-`;
-
-export const ImageIndexText = styled.Text`
-  color: ${black};
-  font-size: 22px;
+  bottom: 90px;
+  flex: 1;
 `;
 
 export const StyledFormArea = styled.View`
