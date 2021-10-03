@@ -1,14 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
-import { TouchableOpacity, Image, Dimensions } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import {
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { CardView } from "react-native-simple-card-view";
 
 import {
   BirdMemoriesPageTitle,
   Line,
   BirdMemoriesContainer,
+  BirdMemoryDescContainer,
   CarouselContainer,
   ImageIndexText,
   ImageIndexTextContainer,
+  BirdMemoryDescription,
   MyFlatList,
   Colors,
 } from "./../components/styles";
@@ -67,16 +77,26 @@ function componentDidMount(setImages, setIsFetching) {
     .catch((err) => console.log(err)); // host server not found (bad network, likely)
 }
 
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 const BirdMemories = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [indexSelected, setIndexSelected] = useState(0);
 
   const [images, setImages] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const carouselRef = useRef();
   const flatListRef = useRef();
 
-  const { black } = Colors;
+  const { black, primary, brand } = Colors;
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   const onTouchThumbnail = (touched) => {
     if (touched === indexSelected) return;
@@ -93,117 +113,203 @@ const BirdMemories = () => {
     });
   };
 
+  // Mongoose Date type format: 2021-10-01T20:52:38.080Z
+  // formattedDateTime format: <month_name> DD, YYYY · hh:mm:ss
+  const formatDateTime = (creationTime) => {
+    let months = {};
+    months["01"] = "January";
+    months["02"] = "February";
+    months["03"] = "March";
+    months["04"] = "April";
+    months["05"] = "May";
+    months["06"] = "June";
+    months["07"] = "July";
+    months["08"] = "August";
+    months["09"] = "September";
+    months["10"] = "October";
+    months["11"] = "November";
+    months["12"] = "December";
+
+    // Extract the date from the createdAt object
+    let year = creationTime.split("-")[0];
+    let month = creationTime.split("-")[1];
+    let day = creationTime.split("-")[2].split("T")[0];
+    // console.log("year: " + year + " \nmonth: " + month + "\nday: " + day);
+
+    let date = months[month] + " " + day + ", " + year;
+
+    // Extract the time from the createdAt object
+    let hour = creationTime.split("T")[1].split(":")[0];
+    let minute = creationTime.split("T")[1].split(":")[1];
+    let second = creationTime.split("T")[1].split(":")[2].split(".")[0];
+    // console.log("hour: " + hour + " \nmin: " + minute + "\nsec: " + second);
+
+    let time = hour + ":" + minute + ":" + second;
+
+    return date + " · " + time;
+  };
+
   useEffect(() => {
     componentDidMount(setImages, setIsFetching);
   }, []);
 
   return (
     <BirdMemoriesContainer>
-      <BirdMemoriesPageTitle birdMemories={true}>
-        Bird Memories Gallery
-      </BirdMemoriesPageTitle>
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: "center",
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <BirdMemoriesPageTitle birdMemories={true}>
+          Bird Memories Gallery
+        </BirdMemoriesPageTitle>
 
-      {/* Carousel View */}
-      <CarouselContainer style={{ flex: 1 / 2, marginTop: 20 }}>
-        <Carousel
-          ref={carouselRef}
-          layout="default"
+        {/* Carousel View */}
+        <CarouselContainer>
+          <Carousel
+            ref={carouselRef}
+            layout="default"
+            data={images}
+            sliderWidth={width}
+            itemWidth={width}
+            // Fire callback when index of img item changes; onSelect updates cur index
+            onSnapToItem={(index) => onSelect(index)}
+            renderItem={({ item, index }) =>
+              // TODO: Swap out Image for custom StyledBirdMemory later
+              images && !isFetching ? (
+                <Image
+                  key={index}
+                  style={{ width: "100%", height: "100%" }}
+                  resizeMode="contain"
+                  source={item.image}
+                />
+              ) : (
+                // This Image will not show, for some reason (same with thumbnail)
+                <Image
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  resizeMode="contain"
+                  source={require("../assets/placeholder.png")}
+                />
+              )
+            }
+          />
+        </CarouselContainer>
+
+        <View
+          style={{
+            justifyContent: "space-between",
+            backgroundColor: { primary },
+          }}
+        >
+          <Pagination
+            inactiveDotColor="gray"
+            dotColor={brand}
+            activeDotIndex={indexSelected}
+            dotsLength={images.length}
+            animatedDuration={150}
+            inactiveDotScale={0.75}
+            carouselRef={carouselRef}
+            tappableDots={true}
+          />
+        </View>
+
+        {/* Display for total # of imgs & cur img index # */}
+        <ImageIndexTextContainer>
+          <ImageIndexText>
+            {/* Display current image index out of total # images, or display nothing when loading imgs */}
+            {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
+          </ImageIndexText>
+        </ImageIndexTextContainer>
+
+        <BirdMemoryDescContainer>
+          <CardView>
+            <BirdMemoryDescription>
+              {/* TODO: style date & time tag */}
+              {!isFetching && "Species: " + images[indexSelected].species}
+            </BirdMemoryDescription>
+            <BirdMemoryDescription>
+              {/* TODO: style date & time tag */}
+              {!isFetching &&
+                formatDateTime(images[indexSelected].creationTime)}
+            </BirdMemoryDescription>
+          </CardView>
+        </BirdMemoryDescContainer>
+
+        {/* console.log(images[indexSelected].creationTime) &&
+              images[indexSelected].creationTime.split("T")[0] +
+                " · " +
+                images[indexSelected].creationTime.split("T")[1].split(".")[0] */}
+
+        {/* Use FlatList component to list thumbnails of memories */}
+        <MyFlatList
+          ref={flatListRef}
+          horizontal={true}
           data={images}
-          sliderWidth={width}
-          itemWidth={width}
-          // Fire callback when index of img item changes; onSelect updates cur index
-          onSnapToItem={(index) => onSelect(index)}
-          renderItem={({ item, index }) =>
-            // TODO: Swap out Image for custom StyledBirdMemory later
-            images && !isFetching ? (
-              <Image
-                key={index}
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="contain"
-                source={item.image}
-              />
-            ) : (
-              // This Image will not show, for some reason (same with thumbnail)
-              <Image
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="contain"
-                source={require("../assets/placeholder.png")}
-              />
-            )
-          }
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: SPACING }}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => onTouchThumbnail(index)}
+            >
+              {/* TODO: Swap out Image for custom StyledBirdMemory later */}
+              {images && !isFetching ? (
+                <Image
+                  style={{
+                    width: THUMB_SIZE,
+                    height: THUMB_SIZE,
+                    marginRight: SPACING,
+                    borderRadius: 16,
+                    borderWidth: index === indexSelected ? 4 : 0.75,
+                    borderColor: index === indexSelected ? brand : "black",
+                  }}
+                  source={item.image}
+                />
+              ) : (
+                <Image
+                  style={{
+                    width: THUMB_SIZE,
+                    height: THUMB_SIZE,
+                    marginRight: SPACING,
+                    borderRadius: 16,
+                    borderWidth: index === indexSelected ? 4 : 0.75,
+                    borderColor: index === indexSelected ? brand : "black",
+                  }}
+                  source={require("../assets/placeholder.png")}
+                />
+              )}
+            </TouchableOpacity>
+          )}
         />
-        <Pagination
-          inactiveDotColor="gray"
-          dotColor={"orange"}
-          activeDotIndex={indexSelected}
-          dotsLength={images.length}
-          animatedDuration={150}
-          inactiveDotScale={1}
-        />
-      </CarouselContainer>
-
-      {/* Use FlatList component to list thumbnails of memories */}
-      <MyFlatList
-        ref={flatListRef}
-        horizontal={true}
-        data={images}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: SPACING }}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => onTouchThumbnail(index)}
-          >
-            {/* TODO: Swap out Image for custom StyledBirdMemory later */}
-            {images && !isFetching ? (
-              <Image
-                style={{
-                  width: THUMB_SIZE,
-                  height: THUMB_SIZE,
-                  marginRight: SPACING,
-                  borderRadius: 16,
-                  borderWidth: index === indexSelected ? 4 : 0.75,
-                  borderColor: index === indexSelected ? "orange" : "black",
-                }}
-                source={item.image}
-              />
-            ) : (
-              <Image
-                style={{
-                  width: THUMB_SIZE,
-                  height: THUMB_SIZE,
-                  marginRight: SPACING,
-                  borderRadius: 16,
-                  borderWidth: index === indexSelected ? 4 : 0.75,
-                  borderColor: index === indexSelected ? "orange" : "black",
-                }}
-                source={require("../assets/placeholder.png")}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Display for total # of imgs & cur img index # */}
-      <ImageIndexTextContainer>
-        <ImageIndexText>
-          {/* Display current image index out of total # images, or display nothing when loading imgs */}
-          {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
-        </ImageIndexText>
-      </ImageIndexTextContainer>
-
-      <ImageIndexTextContainer>
-        <ImageIndexText>
-          {!isFetching && images[indexSelected].species}
-        </ImageIndexText>
-        <ImageIndexText>
-          {/* TODO: style date & time tag */}
-          {!isFetching && images[indexSelected].creationTime}
-        </ImageIndexText>
-      </ImageIndexTextContainer>
+      </ScrollView>
     </BirdMemoriesContainer>
   );
+  // return (
+  //   <BirdMemoriesContainer>
+  //     <CardViewWithImage
+  //       width={300}
+  //       content={
+  //         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. At aut distinctio!"
+  //       }
+  //       source={{ uri: "https://placeimg.com/640/480/tech" }}
+  //       title={"Hello World!"}
+  //       imageWidth={100}
+  //       imageHeight={100}
+  //       onPress={() => console.log("CardViewWithImage Clicked!")}
+  //       roundedImage={true}
+  //       roundedImageValue={50}
+  //       imageMargin={{ top: 10 }}
+  //     />
+  //   </BirdMemoriesContainer>
+  // );
 };
 
 export default BirdMemories;
