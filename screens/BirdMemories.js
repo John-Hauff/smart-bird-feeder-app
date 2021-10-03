@@ -206,4 +206,70 @@ const BirdMemories = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    // flex: 1,
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#6D28D9",
+    textAlign: "center",
+  },
+
+  carousel: {
+    flex: 5.5,
+    backgroundColor: "#FFFFFF",
+    paddingTop: 5,
+    alignItems: "center",
+    paddingLeft: WIN_WIDTH - ITEM_WIDTH,
+  },
+
+  carouselCard: {
+    backgroundColor: "#FFFFFF",
+    width: ITEM_WIDTH,
+    paddingBottom: 20,
+    borderRadius: 8,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+
+  birdMemoryImage: {
+    width: ITEM_WIDTH,
+    height: 300,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+
+  pagination: {
+    flex: 0.9,
+    flexDirection: "column",
+    width: "100%",
+    justifyContent: "flex-start",
+    backgroundColor: "#FFFFFF",
+  },
+
+  imgIndexText: {
+    flex: 2.6,
+    paddingHorizontal: 32,
+    marginBottom: 20,
+    alignSelf: "flex-end",
+  },
+
+  flatlist: {
+    position: "absolute",
+    bottom: 90,
+    flex: 1,
+  },
+});
+
 export default BirdMemories;
