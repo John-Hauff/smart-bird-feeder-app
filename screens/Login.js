@@ -49,9 +49,8 @@ const Login = ({ navigation }) => {
   const [messageType, setMessageType] = useState();
 
   // Context variables
-  const { storedCredentials, setStoredCredentials } = useContext(
-    CredentialsContext
-  );
+  const { storedCredentials, setStoredCredentials } =
+    useContext(CredentialsContext);
 
   const handleLogin = (credentials, setSubmitting) => {
     // Clear message board

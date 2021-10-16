@@ -23,7 +23,7 @@ const RootTab = () => {
     <CredentialsContext.Consumer>
       {({ storedCredentials }) => (
         <NavigationContainer>
-          {/* Immediately move to Welcome screen if storedCredentials is not null */}
+          {/* Immediately move to Welcome screen if storedCredentials is not nullish */}
           {storedCredentials ? (
             <Tab.Navigator
               screenOptions={({ route }) => ({

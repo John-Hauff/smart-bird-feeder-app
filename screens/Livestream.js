@@ -1,46 +1,61 @@
-import React from "react";
-import { Dimensions, View } from "react-native";
-import { NodeCameraView } from "react-native-nodemediaclient";
+import React, { useRef, useState } from "react";
+import { StyleSheet, View, Button } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
-const { width, height } = Dimensions.get("window");
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Video, AVPlaybackStatus } from "expo-av";
 
-const config = {
-  cameraConfig: {
-    cameraId: 1,
-    cameraFrontMirror: false,
-  },
-  videoConfig: {
-    preset: 4,
-    bitrate: 2000000,
-    profile: 2,
-    fps: 30,
-    videoFrontMirror: true,
-  },
-  audioConfig: {
-    bitrate: 128000,
-    profile: 1,
-    samplerate: 44100,
-  },
-};
-
-const LivestreamScreen = () => {
-  const cameraViewRef = React.useRef(null);
-  const streamKey = "787693ed-0ef3-f9a5-4268-accaf0b97e2c";
-  const url = `rtmps://global-live.mux.com:443/app/${streamKey}`;
+const Livestream = () => {
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
 
   return (
-    <View style={{ flex: 1 }}>
-      <NodeCameraView
-        style={{ width, height }}
-        ref={cameraViewRef}
-        outputUrl={url}
-        camera={config.cameraConfig}
-        audio={config.audioConfig}
-        video={config.videoConfig}
-        autopreview={true}
-      />
-    </View>
+    <>
+      <StatusBar style="dark" />
+      <View style={styles.videoContainer}>
+        <Video
+          ref={video}
+          style={styles.video}
+          source={
+            // { uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4" }
+            require("../assets/feed-spout-cap-mockup.mov")
+            // { uri: "rtp://localhost:4000" }
+          }
+          useNativeControls
+          resizeMode="contain"
+          isLooping
+          onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        />
+      </View>
+      <View style={styles.buttons}>
+        <Button
+          title={status.isPlaying ? "Pause" : "Play"}
+          onPress={() =>
+            status.isPlaying
+              ? video.current.pauseAsync()
+              : video.current.playAsync()
+          }
+        />
+      </View>
+    </>
   );
 };
 
-export default LivestreamScreen;
+const styles = StyleSheet.create({
+  videoContainer: {
+    flex: 5,
+  },
+
+  video: {
+    flex: 1,
+    height: "50%",
+    width: "100%",
+  },
+
+  buttons: {
+    flex: 1,
+    backgroundColor: "orange",
+  },
+});
+
+export default Livestream;
