@@ -11,7 +11,7 @@ const Livestream = () => {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <View style={styles.videoContainer}>
         <Video
           ref={video}
