@@ -202,7 +202,7 @@ const BirdMemories = () => {
                     key={index}
                     source={item.image}
                     style={styles.birdMemoryImage}
-                    resizeMode="cover"
+                    resizeMode="contain"
                   />
                   <BirdMemorySpeciesText>
                     {images[indexSelected].species}
@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: "#FFFFFF",
-    // flex: 1,
   },
 
   title: {
@@ -312,9 +311,9 @@ const styles = StyleSheet.create({
   },
 
   carousel: {
-    flex: 5.5,
+    flex: 3,
     backgroundColor: "#FFFFFF",
-    paddingTop: 5,
+    paddingTop: 50,
     alignItems: "center",
     paddingLeft: WIN_WIDTH - ITEM_WIDTH,
   },
@@ -336,7 +335,7 @@ const styles = StyleSheet.create({
 
   birdMemoryImage: {
     width: ITEM_WIDTH,
-    height: 300,
+    height: 200,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
@@ -350,7 +349,7 @@ const styles = StyleSheet.create({
   },
 
   imgIndexText: {
-    flex: 2.6,
+    flex: 2,
     paddingHorizontal: 32,
     marginBottom: 20,
     alignSelf: "flex-end",
