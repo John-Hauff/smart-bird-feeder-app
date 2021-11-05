@@ -114,6 +114,8 @@ const formatDateTime = (creationTime) => {
 
   // Extract the time from the createdAt object
   let hour = creationTime.split("T")[1].split(":")[0];
+  // Fix timezone issue
+  hour = "" + (parseInt(hour) - 4);
   let minute = creationTime.split("T")[1].split(":")[1];
   let second = creationTime.split("T")[1].split(":")[2].split(".")[0];
   // console.log("hour: " + hour + " \nmin: " + minute + "\nsec: " + second);
