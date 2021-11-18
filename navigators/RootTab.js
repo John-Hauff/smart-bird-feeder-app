@@ -16,7 +16,6 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 import { CredentialsContext } from "../components/CredentialsContext";
-import LivestreamScreen from "../screens/Livestream";
 
 const RootTab = () => {
   return (
@@ -38,10 +37,6 @@ const RootTab = () => {
                       : "ios-information-circle-outline";
                   } else if (route.name === "Bird Memories") {
                     iconName = focused ? "ios-images" : "ios-images-outline";
-                  } else if (route.name === "Livestream") {
-                    iconName = focused
-                      ? "ios-videocam"
-                      : "ios-videocam-outline";
                   }
                   // You can return any component that you like here!
                   return <Ionicons name={iconName} size={size} color={color} />;
@@ -61,11 +56,6 @@ const RootTab = () => {
                   name="Bird Memories"
                   options={{ headerShown: false }}
                   component={BirdMemories}
-                />
-                <Tab.Screen
-                  name="Livestream"
-                  options={{ headerShown: false }}
-                  component={LivestreamScreen}
                 />
               </>
             </Tab.Navigator>
