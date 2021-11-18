@@ -240,7 +240,7 @@ const BirdMemories = () => {
                 padding: 2,
               }}
             >
-              🕖 (descending)
+              {"🕖 (new -> old)"}
             </Text>
           </TouchableOpacity>
 
@@ -288,7 +288,7 @@ const BirdMemories = () => {
                 padding: 2,
               }}
             >
-              🕖 (ascending)
+              {"🕖 (old -> new)"}
             </Text>
           </TouchableOpacity>
 
@@ -332,7 +332,7 @@ const BirdMemories = () => {
                 padding: 2,
               }}
             >
-              🐦 (a to z)
+              {"🐦 (a -> z)"}
             </Text>
           </TouchableOpacity>
         </View>
