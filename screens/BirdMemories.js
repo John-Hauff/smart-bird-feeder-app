@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Text,
   FlatList,
-  Button,
+  Platform,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
@@ -176,287 +176,481 @@ const BirdMemories = () => {
     componentDidMount(setImages, setIsFetching);
   }, []);
 
-  return !isFetching ? (
-    <>
-      <StatusBar style="dark" />
-      <View style={styles.container}>
-        {/* <BirdMemoriesPageTitle birdMemories={true}>
+  if (!isFetching) {
+    return Platform.OS === "ios" ? (
+      // platform is ios, so return page according to ios styles
+      <>
+        <StatusBar style="dark" />
+        <View style={styles.container}>
+          {/* <BirdMemoriesPageTitle birdMemories={true}>
         </BirdMemoriesPageTitle> */}
-        <View style={{ marginTop: 30 }}>
-          <Text style={styles.title}>Bird Memories Gallery</Text>
-        </View>
-
-        <View style={styles.sortListView}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "black",
-            }}
-          >
-            {"sort by: "}
-          </Text>
-
-          {/* Button for sorting memories in descending order of creation time */}
-          <TouchableOpacity
-            onPress={() => {
-              setSpeciesSortIsSelected(false);
-              setCapturedAtAscSortIsSelected(false);
-              setCapturedAtDescSortIsSelected(true);
-
-              setImages(
-                images.sort((a, b) => {
-                  let res = b.creationTime.localeCompare(a.creationTime);
-                  if (res < 0)
-                    console.log(
-                      b.creationTime + " was created before " + a.creationTime
-                    );
-                  else if (res > 0)
-                    console.log(
-                      b.creationTime + " was created after " + a.creationTime
-                    );
-                  else if (res == 0)
-                    console.log(
-                      b.creationTime +
-                        " and " +
-                        a.creationTime +
-                        " creation times are the same! "
-                    );
-                  return res;
-                })
-              );
-            }}
-            style={{
-              backgroundColor: capturedAtDescSortIsSelected
-                ? "yellow"
-                : "#FFFFFF",
-              borderWidth: 0.5,
-              borderRadius: 5,
-              borderColor: "black",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                padding: 2,
-              }}
-            >
-              {"🕖 (new -> old)"}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Button for sorting memories in ascending order of creation time */}
-          <TouchableOpacity
-            onPress={() => {
-              setSpeciesSortIsSelected(false);
-              setCapturedAtAscSortIsSelected(true);
-              setCapturedAtDescSortIsSelected(false);
-
-              setImages(
-                images.sort((a, b) => {
-                  let res = a.creationTime.localeCompare(b.creationTime);
-                  if (res < 0)
-                    console.log(
-                      a.creationTime + " was created before " + b.creationTime
-                    );
-                  else if (res > 0)
-                    console.log(
-                      a.creationTime + " was created after " + b.creationTime
-                    );
-                  else if (res == 0)
-                    console.log(
-                      b.creationTime +
-                        " and " +
-                        a.creationTime +
-                        " creation times are the same! "
-                    );
-                  return res;
-                })
-              );
-            }}
-            style={{
-              backgroundColor: capturedAtAscSortIsSelected
-                ? "yellow"
-                : "#FFFFFF",
-              borderWidth: 0.5,
-              borderRadius: 5,
-              borderColor: "black",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                padding: 2,
-              }}
-            >
-              {"🕖 (old -> new)"}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Button for sorting memories in order of species (a to z) */}
-          <TouchableOpacity
-            onPress={() => {
-              setSpeciesSortIsSelected(true);
-              setCapturedAtAscSortIsSelected(false);
-              setCapturedAtDescSortIsSelected(false);
-
-              setImages(
-                images.sort((a, b) => {
-                  let res = a.species.localeCompare(b.species);
-                  if (res < 0)
-                    console.log(
-                      a.species + " comes before created before " + b.species
-                    );
-                  else if (res > 0)
-                    console.log(a.species + " comes after " + b.species);
-                  else if (res == 0)
-                    console.log(
-                      a.species +
-                        " and " +
-                        b.species +
-                        " species are the same! "
-                    );
-                  return res;
-                })
-              );
-            }}
-            style={{
-              backgroundColor: speciesSortIsSelected ? "yellow" : "#FFFFFF",
-              borderWidth: 0.5,
-              borderRadius: 5,
-              borderColor: "black",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                padding: 2,
-              }}
-            >
-              {"🐦 (a -> z)"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <Line />
-
-        <ScrollView
-          contentContainerStyle={{
-            width: "100%",
-            height: "100%",
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {/* Carousel View */}
-          <View style={styles.carousel}>
-            <Carousel
-              ref={carouselRef}
-              layout="default"
-              data={images}
-              sliderWidth={width}
-              itemWidth={width}
-              // Fire callback when index of img item changes; onSelect updates cur index
-              onSnapToItem={(index) => onSelect(index)}
-              renderItem={({ item, index }) => (
-                <View key={index} style={styles.carouselCard}>
-                  <Image
-                    key={index}
-                    source={item.image}
-                    style={styles.birdMemoryImage}
-                    resizeMode="contain"
-                  />
-                  <BirdMemorySpeciesText>{item.species}</BirdMemorySpeciesText>
-                  <BirdMemoryDescText>
-                    {formatDateTime(item.creationTime)}
-                  </BirdMemoryDescText>
-                </View>
-              )}
-            />
+          <View style={{ marginTop: 30 }}>
+            <Text style={styles.title}>Bird Memories Gallery</Text>
           </View>
 
-          <View style={styles.pagination}>
-            <Pagination
-              dotColor={brand}
-              inactiveDotColor={darkLight}
-              activeDotIndex={indexSelected}
-              dotsLength={images.length}
-              animatedDuration={150}
-              inactiveDotScale={0.75}
-              carouselRef={carouselRef}
-              tappableDots={true}
-              activeOpacity={1}
-            />
-          </View>
+          <View style={styles.sortListView}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "black",
+              }}
+            >
+              {"sort by: "}
+            </Text>
 
-          {/* Display for total # of imgs & cur img index # */}
-          <View style={styles.imgIndexText}>
-            <ImageIndexText>
-              {/* Display current image index out of total # images, or display nothing when loading imgs */}
-              {images.length > 0 ? indexSelected + 1 + "/" + images.length : ""}
-            </ImageIndexText>
-          </View>
+            {/* Button for sorting memories in descending order of creation time */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(false);
+                setCapturedAtAscSortIsSelected(false);
+                setCapturedAtDescSortIsSelected(true);
 
-          {/* Use FlatList component to list thumbnails of memories */}
-          <FlatList
-            style={styles.flatlist}
-            ref={flatListRef}
-            horizontal={true}
-            data={images}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: SPACING }}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => {
-                  onTouchThumbnail(index);
+                setImages(
+                  images.sort((a, b) => {
+                    let res = b.creationTime.localeCompare(a.creationTime);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: capturedAtDescSortIsSelected
+                  ? "yellow"
+                  : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
                 }}
               >
-                {/* TODO: Swap out Image for custom StyledBirdMemory later */}
-                <Image
-                  style={{
-                    width: THUMB_SIZE,
-                    height: THUMB_SIZE,
-                    marginRight: SPACING,
-                    borderRadius: 16,
-                    borderWidth: index === indexSelected ? 4 : 0.75,
-                    borderColor: index === indexSelected ? brand : "black",
+                {"🕖 (new -> old)"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Button for sorting memories in ascending order of creation time */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(false);
+                setCapturedAtAscSortIsSelected(true);
+                setCapturedAtDescSortIsSelected(false);
+
+                setImages(
+                  images.sort((a, b) => {
+                    let res = a.creationTime.localeCompare(b.creationTime);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: capturedAtAscSortIsSelected
+                  ? "yellow"
+                  : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
+                }}
+              >
+                {"🕖 (old -> new)"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Button for sorting memories in order of species (a to z) */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(true);
+                setCapturedAtAscSortIsSelected(false);
+                setCapturedAtDescSortIsSelected(false);
+
+                setImages(
+                  images.sort((a, b) => {
+                    let res = a.species.localeCompare(b.species);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: speciesSortIsSelected ? "yellow" : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
+                }}
+              >
+                {"🐦 (a -> z)"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Line />
+
+          <ScrollView
+            contentContainerStyle={{
+              width: "100%",
+              height: "100%",
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {/* Carousel View */}
+            <View style={styles.carousel}>
+              <Carousel
+                ref={carouselRef}
+                layout="default"
+                data={images}
+                sliderWidth={width}
+                itemWidth={width}
+                // Fire callback when index of img item changes; onSelect updates cur index
+                onSnapToItem={(index) => onSelect(index)}
+                renderItem={({ item, index }) => (
+                  <View key={index} style={styles.carouselCard}>
+                    <Image
+                      key={index}
+                      source={item.image}
+                      style={styles.birdMemoryImage}
+                      resizeMode="contain"
+                    />
+                    <BirdMemorySpeciesText>
+                      {item.species}
+                    </BirdMemorySpeciesText>
+                    <BirdMemoryDescText>
+                      {formatDateTime(item.creationTime)}
+                    </BirdMemoryDescText>
+                  </View>
+                )}
+              />
+            </View>
+
+            <View style={styles.pagination}>
+              <Pagination
+                dotColor={brand}
+                inactiveDotColor={darkLight}
+                activeDotIndex={indexSelected}
+                dotsLength={images.length}
+                animatedDuration={150}
+                inactiveDotScale={0.75}
+                carouselRef={carouselRef}
+                tappableDots={true}
+                activeOpacity={1}
+              />
+            </View>
+
+            {/* Display for total # of imgs & cur img index # */}
+            <View style={styles.imgIndexText}>
+              <ImageIndexText>
+                {/* Display current image index out of total # images, or display nothing when loading imgs */}
+                {images.length > 0
+                  ? indexSelected + 1 + "/" + images.length
+                  : ""}
+              </ImageIndexText>
+            </View>
+
+            {/* Use FlatList component to list thumbnails of memories */}
+            <FlatList
+              style={styles.flatlist}
+              ref={flatListRef}
+              horizontal={true}
+              data={images}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: SPACING }}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    onTouchThumbnail(index);
                   }}
-                  source={item.image}
-                />
-              </TouchableOpacity>
-            )}
-          />
-        </ScrollView>
-      </View>
-    </>
-  ) : (
+                >
+                  {/* TODO: Swap out Image for custom StyledBirdMemory later */}
+                  <Image
+                    style={{
+                      width: THUMB_SIZE,
+                      height: THUMB_SIZE,
+                      marginRight: SPACING,
+                      borderRadius: 16,
+                      borderWidth: index === indexSelected ? 4 : 0.75,
+                      borderColor: index === indexSelected ? brand : "black",
+                    }}
+                    source={item.image}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          </ScrollView>
+        </View>
+      </>
+    ) : (
+      // platform is android, so return page according to android styles
+      <>
+        <StatusBar style="dark" />
+        <View
+          style={{
+            padding: 10,
+            backgroundColor: "#FFFFFF",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          {/* <BirdMemoriesPageTitle birdMemories={true}>
+        </BirdMemoriesPageTitle> */}
+          <View style={{ marginTop: 30 }}>
+            <Text style={styles.title}>Bird Memories Gallery</Text>
+          </View>
+
+          <View style={styles.sortListView}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "black",
+              }}
+            >
+              {"sort by: "}
+            </Text>
+
+            {/* Button for sorting memories in descending order of creation time */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(false);
+                setCapturedAtAscSortIsSelected(false);
+                setCapturedAtDescSortIsSelected(true);
+
+                setImages(
+                  images.sort((a, b) => {
+                    let res = b.creationTime.localeCompare(a.creationTime);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: capturedAtDescSortIsSelected
+                  ? "yellow"
+                  : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
+                }}
+              >
+                {"🕖 (new -> old)"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Button for sorting memories in ascending order of creation time */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(false);
+                setCapturedAtAscSortIsSelected(true);
+                setCapturedAtDescSortIsSelected(false);
+
+                setImages(
+                  images.sort((a, b) => {
+                    let res = a.creationTime.localeCompare(b.creationTime);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: capturedAtAscSortIsSelected
+                  ? "yellow"
+                  : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
+                }}
+              >
+                {"🕖 (old -> new)"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Button for sorting memories in order of species (a to z) */}
+            <TouchableOpacity
+              onPress={() => {
+                setSpeciesSortIsSelected(true);
+                setCapturedAtAscSortIsSelected(false);
+                setCapturedAtDescSortIsSelected(false);
+
+                setImages(
+                  images.sort((a, b) => {
+                    let res = a.species.localeCompare(b.species);
+                    return res;
+                  })
+                );
+              }}
+              style={{
+                backgroundColor: speciesSortIsSelected ? "yellow" : "#FFFFFF",
+                borderWidth: 0.5,
+                borderRadius: 5,
+                borderColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  padding: 2,
+                }}
+              >
+                {"🐦 (a -> z)"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Line />
+
+          <ScrollView
+            contentContainerStyle={{
+              width: "100%",
+              height: "100%",
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {/* Carousel View */}
+            <View style={styles.carousel}>
+              <Carousel
+                ref={carouselRef}
+                layout="default"
+                data={images}
+                sliderWidth={width}
+                itemWidth={width}
+                // Fire callback when index of img item changes; onSelect updates cur index
+                onSnapToItem={(index) => onSelect(index)}
+                renderItem={({ item, index }) => (
+                  <View key={index} style={styles.carouselCard}>
+                    <Image
+                      key={index}
+                      source={item.image}
+                      style={styles.birdMemoryImage}
+                      resizeMode="contain"
+                    />
+                    <BirdMemorySpeciesText>
+                      {item.species}
+                    </BirdMemorySpeciesText>
+                    <BirdMemoryDescText>
+                      {formatDateTime(item.creationTime)}
+                    </BirdMemoryDescText>
+                  </View>
+                )}
+              />
+            </View>
+
+            <View style={styles.pagination}>
+              <Pagination
+                dotColor={brand}
+                inactiveDotColor={darkLight}
+                activeDotIndex={indexSelected}
+                dotsLength={images.length}
+                animatedDuration={150}
+                inactiveDotScale={0.75}
+                carouselRef={carouselRef}
+                tappableDots={true}
+                activeOpacity={1}
+              />
+            </View>
+
+            {/* Display for total # of imgs & cur img index # */}
+            <View style={styles.imgIndexText}>
+              <ImageIndexText>
+                {/* Display current image index out of total # images, or display nothing when loading imgs */}
+                {images.length > 0
+                  ? indexSelected + 1 + "/" + images.length
+                  : ""}
+              </ImageIndexText>
+            </View>
+
+            {/* Use FlatList component to list thumbnails of memories */}
+            <FlatList
+              style={{
+                position: "absolute",
+                bottom: 90,
+                flex: 1,
+              }}
+              ref={flatListRef}
+              horizontal={true}
+              data={images}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: SPACING }}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    onTouchThumbnail(index);
+                  }}
+                >
+                  {/* TODO: Swap out Image for custom StyledBirdMemory later */}
+                  <Image
+                    style={{
+                      width: THUMB_SIZE,
+                      height: THUMB_SIZE,
+                      marginRight: SPACING,
+                      borderRadius: 16,
+                      borderWidth: index === indexSelected ? 4 : 0.75,
+                      borderColor: index === indexSelected ? brand : "black",
+                    }}
+                    source={item.image}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          </ScrollView>
+        </View>
+      </>
+    );
+  } else {
     // Alternate screen render for ActivityIndicator
     // to show while images are being fetched and processed
-    <>
-      <StatusBar style="dark" />
-      <BirdMemoriesContainer>
-        <BirdMemoriesPageTitle birdMemories={true}>
-          Bird Memories Gallery
-        </BirdMemoriesPageTitle>
+    return (
+      <>
+        <StatusBar style="dark" />
+        <BirdMemoriesContainer>
+          <BirdMemoriesPageTitle birdMemories={true}>
+            Bird Memories Gallery
+          </BirdMemoriesPageTitle>
 
-        <Line />
+          <Line />
 
-        <ScrollView
-          contentContainerStyle={{
-            flex: 1,
-            alignItems: "center",
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <ActivityIndicator size="large" color={black} />
-        </ScrollView>
-      </BirdMemoriesContainer>
-    </>
-  );
+          <ScrollView
+            contentContainerStyle={{
+              flex: 1,
+              alignItems: "center",
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <ActivityIndicator size="large" color={black} />
+          </ScrollView>
+        </BirdMemoriesContainer>
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
