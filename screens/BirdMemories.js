@@ -10,9 +10,9 @@ import {
   StyleSheet,
   Text,
   FlatList,
+  Button,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { CardView } from "react-native-simple-card-view";
 
 import {
   BirdMemoriesPageTitle,
@@ -132,10 +132,16 @@ const BirdMemories = () => {
   const [images, setImages] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [capturedAtDescSortIsSelected, setCapturedAtDescSortIsSelected] =
+    useState(true);
+  const [capturedAtAscSortIsSelected, setCapturedAtAscSortIsSelected] =
+    useState(false);
+  const [speciesSortIsSelected, setSpeciesSortIsSelected] = useState(false);
+
   const carouselRef = useRef();
   const flatListRef = useRef();
 
-  const { black, primary, brand, darkLight } = Colors;
+  const { black, brand, darkLight } = Colors;
 
   /*
     onRefresh will fetch the bird memory documents from the API again so the screen may update
@@ -146,6 +152,9 @@ const BirdMemories = () => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
     componentDidMount(setImages, setIsFetching);
+    setSpeciesSortIsSelected(false);
+    setCapturedAtAscSortIsSelected(false);
+    setCapturedAtDescSortIsSelected(true);
   }, []);
 
   const onTouchThumbnail = (touched) => {
@@ -176,13 +185,164 @@ const BirdMemories = () => {
         <View style={{ marginTop: 30 }}>
           <Text style={styles.title}>Bird Memories Gallery</Text>
         </View>
+
+        <View style={styles.sortListView}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "black",
+            }}
+          >
+            {"sort by: "}
+          </Text>
+
+          {/* Button for sorting memories in descending order of creation time */}
+          <TouchableOpacity
+            onPress={() => {
+              setSpeciesSortIsSelected(false);
+              setCapturedAtAscSortIsSelected(false);
+              setCapturedAtDescSortIsSelected(true);
+
+              setImages(
+                images.sort((a, b) => {
+                  let res = b.creationTime.localeCompare(a.creationTime);
+                  if (res < 0)
+                    console.log(
+                      b.creationTime + " was created before " + a.creationTime
+                    );
+                  else if (res > 0)
+                    console.log(
+                      b.creationTime + " was created after " + a.creationTime
+                    );
+                  else if (res == 0)
+                    console.log(
+                      b.creationTime +
+                        " and " +
+                        a.creationTime +
+                        " creation times are the same! "
+                    );
+                  return res;
+                })
+              );
+            }}
+            style={{
+              backgroundColor: capturedAtDescSortIsSelected
+                ? "yellow"
+                : "#FFFFFF",
+              borderWidth: 0.5,
+              borderRadius: 5,
+              borderColor: "black",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                padding: 2,
+              }}
+            >
+              🕖 (descending)
+            </Text>
+          </TouchableOpacity>
+
+          {/* Button for sorting memories in ascending order of creation time */}
+          <TouchableOpacity
+            onPress={() => {
+              setSpeciesSortIsSelected(false);
+              setCapturedAtAscSortIsSelected(true);
+              setCapturedAtDescSortIsSelected(false);
+
+              setImages(
+                images.sort((a, b) => {
+                  let res = a.creationTime.localeCompare(b.creationTime);
+                  if (res < 0)
+                    console.log(
+                      a.creationTime + " was created before " + b.creationTime
+                    );
+                  else if (res > 0)
+                    console.log(
+                      a.creationTime + " was created after " + b.creationTime
+                    );
+                  else if (res == 0)
+                    console.log(
+                      b.creationTime +
+                        " and " +
+                        a.creationTime +
+                        " creation times are the same! "
+                    );
+                  return res;
+                })
+              );
+            }}
+            style={{
+              backgroundColor: capturedAtAscSortIsSelected
+                ? "yellow"
+                : "#FFFFFF",
+              borderWidth: 0.5,
+              borderRadius: 5,
+              borderColor: "black",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                padding: 2,
+              }}
+            >
+              🕖 (ascending)
+            </Text>
+          </TouchableOpacity>
+
+          {/* Button for sorting memories in order of species (a to z) */}
+          <TouchableOpacity
+            onPress={() => {
+              setSpeciesSortIsSelected(true);
+              setCapturedAtAscSortIsSelected(false);
+              setCapturedAtDescSortIsSelected(false);
+
+              setImages(
+                images.sort((a, b) => {
+                  let res = a.species.localeCompare(b.species);
+                  if (res < 0)
+                    console.log(
+                      a.species + " comes before created before " + b.species
+                    );
+                  else if (res > 0)
+                    console.log(a.species + " comes after " + b.species);
+                  else if (res == 0)
+                    console.log(
+                      a.species +
+                        " and " +
+                        b.species +
+                        " species are the same! "
+                    );
+                  return res;
+                })
+              );
+            }}
+            style={{
+              backgroundColor: speciesSortIsSelected ? "yellow" : "#FFFFFF",
+              borderWidth: 0.5,
+              borderRadius: 5,
+              borderColor: "black",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                padding: 2,
+              }}
+            >
+              🐦 (a to z)
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <Line />
 
         <ScrollView
           contentContainerStyle={{
             width: "100%",
             height: "100%",
-            alignItems: "center",
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -206,11 +366,9 @@ const BirdMemories = () => {
                     style={styles.birdMemoryImage}
                     resizeMode="contain"
                   />
-                  <BirdMemorySpeciesText>
-                    {images[indexSelected].species}
-                  </BirdMemorySpeciesText>
+                  <BirdMemorySpeciesText>{item.species}</BirdMemorySpeciesText>
                   <BirdMemoryDescText>
-                    {formatDateTime(images[indexSelected].creationTime)}
+                    {formatDateTime(item.creationTime)}
                   </BirdMemoryDescText>
                 </View>
               )}
@@ -251,7 +409,9 @@ const BirdMemories = () => {
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => onTouchThumbnail(index)}
+                onPress={() => {
+                  onTouchThumbnail(index);
+                }}
               >
                 {/* TODO: Swap out Image for custom StyledBirdMemory later */}
                 <Image
@@ -312,10 +472,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  sortListView: {
+    paddingTop: 5,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+
   carousel: {
     flex: 3,
     backgroundColor: "#FFFFFF",
-    paddingTop: 50,
+    paddingTop: 25,
     alignItems: "center",
     paddingLeft: WIN_WIDTH - ITEM_WIDTH,
   },
@@ -351,7 +517,7 @@ const styles = StyleSheet.create({
   },
 
   imgIndexText: {
-    flex: 2,
+    flex: 2.2,
     paddingHorizontal: 32,
     marginBottom: 20,
     alignSelf: "flex-end",
@@ -361,6 +527,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 90,
     flex: 1,
+    paddingBottom: 30,
   },
 });
 

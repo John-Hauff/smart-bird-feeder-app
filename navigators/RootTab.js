@@ -38,7 +38,6 @@ const RootTab = () => {
                   } else if (route.name === "Bird Memories") {
                     iconName = focused ? "ios-images" : "ios-images-outline";
                   }
-                  // You can return any component that you like here!
                   return <Ionicons name={iconName} size={size} color={color} />;
                 },
                 tabBarActiveTintColor: "purple",
