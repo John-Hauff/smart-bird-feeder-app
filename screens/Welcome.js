@@ -28,28 +28,20 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
-async function sendPushNotification(expoPushToken) {
-  const message = {
-    to: expoPushToken,
-    sound: "default",
-    title: "Message Title",
-    body: "And here is the body!",
-    data: { someData: "goes here" },
-  };
-
-  const url = "https://exp.host/--/api/v2/push/send";
-  // const url = "http://localhost:3000/user/post-bird-memory-notification";
-
-  await fetch(url, {
-    method: "POST",
+function postForm(path, form) {
+  const str = [];
+  for (let p in form) {
+    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(form[p]));
+  }
+  const body = str.join("&");
+  const req = {
+    method: "post",
     headers: {
-      Accept: "application/json",
-      "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: JSON.stringify(message),
-  });
+    body,
+  };
+  return fetch(path, req);
 }
 
 async function registerForPushNotificationsAsync() {
@@ -82,6 +74,7 @@ async function registerForPushNotificationsAsync() {
   }
 
   return token;
+  // return postForm(PUSH_ENDPOINT, { token: t });
 }
 
 const Welcome = ({ navigation }) => {
@@ -111,9 +104,7 @@ const Welcome = ({ navigation }) => {
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        // console.log("before setting notification: " + notification);
         setNotification(notification);
-        // console.log("after setting notification: " + notification);
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -158,33 +149,6 @@ const Welcome = ({ navigation }) => {
           </StyledFormArea>
         </WelcomeContainer>
       </InnerContainer>
-
-      {/* Push Notificaiton Testing */}
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-around",
-        }}
-      >
-        <Text>Your expo push token: {expoPushToken}</Text>
-        <View style={{ alignItems: "center", justifyContent: "center" }}>
-          <Text>
-            Title: {notification && notification.request.content.title}{" "}
-          </Text>
-          <Text>Body: {notification && notification.request.content.body}</Text>
-          <Text>
-            Data:{" "}
-            {notification && JSON.stringify(notification.request.content.data)}
-          </Text>
-        </View>
-        <Button
-          title="Press to Send Notification"
-          onPress={async () => {
-            await sendPushNotification(expoPushToken);
-          }}
-        />
-      </View>
     </>
   );
 };
