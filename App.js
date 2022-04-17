@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-
-import RootTab from "./navigators/RootTab";
-
-import AppLoading from "expo-app-loading";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { CredentialsContext } from "./components/CredentialsContext";
+import React, { useState } from 'react';
+import RootTab from './navigators/RootTab';
+import AppLoading from 'expo-app-loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CredentialsContext } from './components/CredentialsContext';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
-  const [storedCredentials, setStoredCredentials] = useState("");
+  const [storedCredentials, setStoredCredentials] = useState('');
 
   const checkLoginCredentials = () => {
-    AsyncStorage.getItem("smartBirdFeederCredentials")
+    AsyncStorage.getItem('smartBirdFeederCredentials')
       .then((result) => {
         if (result !== null) {
           setStoredCredentials(JSON.parse(result));
