@@ -17,74 +17,75 @@ const Stack = createNativeStackNavigator();
 
 import { CredentialsContext } from '../components/CredentialsContext';
 
+const loadInitialScreen = (storedCredentials) => {
+  if (storedCredentials) {
+    return (
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'ios-home' : 'ios-home-outline';
+            } else if (route.name === 'Settings') {
+              iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+            } else if (route.name === 'Bird Memories') {
+              iconName = focused ? 'ios-images' : 'ios-images-outline';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'purple',
+          tabBarInactiveTintColor: 'gray',
+        })}
+        initialRouteName="Login"
+      >
+        <>
+          <Tab.Screen
+            options={{ headerShown: false }}
+            name="Home"
+            component={Welcome}
+          />
+          <Tab.Screen
+            name="Bird Memories"
+            options={{ headerShown: false }}
+            component={BirdMemories}
+          />
+        </>
+      </Tab.Navigator>
+    );
+  }
+
+  return (
+    // Otherwise, return stack navigator with sctacked screens of the Login and Signup screens
+    <Stack.Navigator
+      screenOptions={{
+        headerStyled: {
+          backgroundColor: 'transparent',
+        },
+        headerTintColor: '#1F2937',
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+          paddingLeft: 20,
+        },
+      }}
+    >
+      <Stack.Screen name="Login" headerShown={false} component={Login} />
+      <Stack.Screen name="Signup" headerShown={false} component={Signup} />
+    </Stack.Navigator>
+  );
+};
+
 const RootTab = () => {
   return (
     <CredentialsContext.Consumer>
       {({ storedCredentials }) => (
         <NavigationContainer>
           {/* Immediately move to Welcome screen if storedCredentials is not nullish */}
-          {storedCredentials ? (
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName;
-
-                  if (route.name === 'Home') {
-                    iconName = focused ? 'ios-home' : 'ios-home-outline';
-                  } else if (route.name === 'Settings') {
-                    iconName = focused
-                      ? 'ios-information-circle'
-                      : 'ios-information-circle-outline';
-                  } else if (route.name === 'Bird Memories') {
-                    iconName = focused ? 'ios-images' : 'ios-images-outline';
-                  }
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-                tabBarActiveTintColor: 'purple',
-                tabBarInactiveTintColor: 'gray',
-              })}
-              initialRouteName="Login"
-            >
-              <>
-                <Tab.Screen
-                  options={{ headerShown: false }}
-                  name="Home"
-                  component={Welcome}
-                />
-                <Tab.Screen
-                  name="Bird Memories"
-                  options={{ headerShown: false }}
-                  component={BirdMemories}
-                />
-              </>
-            </Tab.Navigator>
-          ) : (
-            <Stack.Navigator
-              screenOptions={{
-                headerStyled: {
-                  backgroundColor: 'transparent',
-                },
-                headerTintColor: '#1F2937',
-                headerTransparent: true,
-                headerTitle: '',
-                headerLeftContainerStyle: {
-                  paddingLeft: 20,
-                },
-              }}
-            >
-              {/* Otherwise, return stack of the Login and Signup screens */}
-              <Stack.Screen
-                name="Login"
-                headerShown={false}
-                component={Login}
-              />
-              <Stack.Screen
-                name="Signup"
-                headerShown={false}
-                component={Signup}
-              />
-            </Stack.Navigator>
-          )}
+          {/* Load the Welcome screen if credentials are stored, else load login screen */}
+          {loadInitialScreen(storedCredentials)}
         </NavigationContainer>
       )}
     </CredentialsContext.Consumer>
