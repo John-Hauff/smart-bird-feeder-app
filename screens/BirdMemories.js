@@ -65,11 +65,11 @@ function componentDidMount(setImages, setIsFetching) {
         // console.log(data["61575c7fe9b7cf3a574f8ac8"].img.species);
         birdMemImages.push({
           id: idStrs[counter - 1],
-          image: { uri: base64Flag + imageStrs[counter - 1] },
+          base64Image: { uri: base64Flag + imageStrs[counter - 1] },
           species: data[i].img.species ? data[i].img.species : 'rat with wings',
           creationTime: data[i].createdAt
             ? data[i].createdAt
-            : "It's 5 O'clock somewhere ",
+            : "It's 5 O'clock somewhere",
         });
 
         counter++;
@@ -318,9 +318,10 @@ const BirdMemories = () => {
                 onSnapToItem={(index) => onSelect(index)}
                 renderItem={({ item, index }) => (
                   <View key={index} style={styles.carouselCard}>
+                    {console.log('item = ', item.creationTime)}
                     <Image
                       key={index}
-                      source={item.image}
+                      source={item.base64Image}
                       style={styles.birdMemoryImage}
                       resizeMode="contain"
                     />
@@ -385,7 +386,7 @@ const BirdMemories = () => {
                       borderWidth: index === indexSelected ? 4 : 0.75,
                       borderColor: index === indexSelected ? brand : 'black',
                     }}
-                    source={item.image}
+                    source={item.base64Image}
                   />
                 </TouchableOpacity>
               )}
@@ -544,7 +545,7 @@ const BirdMemories = () => {
                   <View key={index} style={styles.carouselCard}>
                     <Image
                       key={index}
-                      source={item.image}
+                      source={item.base64Image}
                       style={styles.birdMemoryImage}
                       resizeMode="contain"
                     />
@@ -613,7 +614,7 @@ const BirdMemories = () => {
                       borderWidth: index === indexSelected ? 4 : 0.75,
                       borderColor: index === indexSelected ? brand : 'black',
                     }}
-                    source={item.image}
+                    source={item.base64Image}
                   />
                 </TouchableOpacity>
               )}
