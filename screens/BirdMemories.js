@@ -369,6 +369,8 @@ const BirdMemories = () => {
                       })
                       .then((res) => {
                         console.log('response from the server is: ', res);
+                        // Refresh the screen to get updates image list
+                        onRefresh();
                       })
                       .catch((err) => console.log(err));
                   }
