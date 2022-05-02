@@ -26,6 +26,8 @@ import {
 
 import { encode as btoa } from 'base-64';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 const SPACING = 10;
@@ -318,7 +320,7 @@ const BirdMemories = () => {
                 onSnapToItem={(index) => onSelect(index)}
                 renderItem={({ item, index }) => (
                   <View key={index} style={styles.carouselCard}>
-                    {console.log('item = ', item.creationTime)}
+                    {/* {console.log('item = ', item.creationTime)} */}
                     <Image
                       key={index}
                       source={item.base64Image}
@@ -350,8 +352,34 @@ const BirdMemories = () => {
               />
             </View>
 
-            {/* Display for total # of imgs & cur img index # */}
+            <View style={styles.trashIcon}>
+              <TouchableOpacity
+                onPress={() => {
+                  const curBirdMem = images[indexSelected];
+                  console.log(curBirdMem.creationTime);
+                  if (isFetching === true) {
+                    return null;
+                  } else {
+                    console.log('trash pressed w/ img loaded');
+                    const url =
+                      'https://smart-bird-feeder-api.herokuapp.com/user/delete-bird-memory';
+                    axios
+                      .post(url, {
+                        createdAt: curBirdMem.creationTime,
+                      })
+                      .then((res) => {
+                        console.log('response from the server is: ', res);
+                      })
+                      .catch((err) => console.log(err));
+                  }
+                }}
+              >
+                <Ionicons name="trash" size={30} color={brand} />
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.imgIndexText}>
+              {/* Display for total # of imgs & cur img index # */}
               <ImageIndexText>
                 {/* Display current image index out of total # images, or display nothing when loading imgs */}
                 {images.length > 0
@@ -574,8 +602,8 @@ const BirdMemories = () => {
               />
             </View>
 
-            {/* Display for total # of imgs & cur img index # */}
             <View style={styles.imgIndexText}>
+              {/* Display for total # of imgs & cur img index # */}
               <ImageIndexText>
                 {/* Display current image index out of total # images, or display nothing when loading imgs */}
                 {images.length > 0
@@ -708,6 +736,12 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
+  },
+
+  trashIcon: {
+    flex: 0.5,
+    alignSelf: 'flex-end',
+    paddingRight: 32,
   },
 
   imgIndexText: {

@@ -1,14 +1,14 @@
 // TODO: Use more % in styles rather than explicit px values
 //  https://medium.com/@shanerudolfworktive/7-tips-to-develop-react-native-uis-for-all-screen-sizes-7ec5271be25c
-import styled from "styled-components/native";
-import Constants from "expo-constants";
-import { Dimensions } from "react-native";
+import styled from 'styled-components/native';
+import Constants from 'expo-constants';
+import { Dimensions } from 'react-native';
 
 const StatusBarHeight = Constants.statusBarHeight;
 
-const win = Dimensions.get("window");
-const WIN_WIDTH = Dimensions.get("window").width;
-const SLIDER_WIDTH = Dimensions.get("window").width + 80;
+const win = Dimensions.get('window');
+const WIN_WIDTH = Dimensions.get('window').width;
+const SLIDER_WIDTH = Dimensions.get('window').width + 80;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 // Get ratio to scale image height
@@ -16,14 +16,14 @@ const ratio = win.width / 1280; // 1280 is width of actual image
 
 // colors
 export const Colors = {
-  primary: "#FFFFFF",
-  secondary: "#E5E7EB",
-  tertiary: "#1F2937",
-  darkLight: "#9CA3AF",
-  brand: "#6D28D9",
-  green: "#10B981",
-  red: "#EF4444",
-  black: "#000000",
+  primary: '#FFFFFF',
+  secondary: '#E5E7EB',
+  tertiary: '#1F2937',
+  darkLight: '#9CA3AF',
+  brand: '#6D28D9',
+  green: '#10B981',
+  red: '#EF4444',
+  black: '#000000',
 };
 
 // Create an object for each color so we can refer to each by name
@@ -84,11 +84,11 @@ export const WelcomeImage = styled.Image`
 
 // DEPRECATED
 export const StyledBirdMemory = styled.Image`
-  width: ${win.width + "px"};
-  height: ${720 * ratio + "px"};
+  width: ${win.width + 'px'};
+  height: ${720 * ratio + 'px'};
   border-width: 1px;
   border-color: ${black};
-  resize-mode: ${"contain"};
+  resize-mode: ${'contain'};
 `;
 
 export const PageTitle = styled.Text`
@@ -100,16 +100,16 @@ export const PageTitle = styled.Text`
 `;
 
 export const BirdMemoriesContainer = styled.View`
-  background-color: ${"white"}};
+  background-color: ${'white'}};
   align-items: center;
 `;
 
 export const CarouselContainer = styled.View`
   flex: ${6};
   align-items: center;
-  ${"" /* padding: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"}; */}
-  padding-left: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"};
-  ${"" /* padding-left: 0px; */}
+  ${'' /* padding: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + "px"}; */}
+  padding-left: ${(WIN_WIDTH - ITEM_WIDTH) / 2 + 'px'};
+  ${'' /* padding-left: 0px; */}
   padding-top: 20px;
 `;
 
@@ -148,18 +148,18 @@ export const ImageIndexTextContainer = styled.View`
   margin-top: 0px;
   padding-horizontal: 32px;
   margin-bottom: 20px;
-  align-self: ${"flex-end"};
+  align-self: ${'flex-end'};
   flex: 2;
 `;
 
 export const ImageIndexText = styled.Text`
   color: ${tertiary};
   font-size: 22px;
-  text-align: ${"right"};
+  text-align: ${'right'};
 `;
 
 export const MyFlatList = styled.FlatList`
-  position: ${"absolute"};
+  position: ${'absolute'};
   bottom: 90px;
   flex: 1;
 `;
@@ -227,7 +227,7 @@ export const ButtonText = styled.Text`
 export const MsgBox = styled.Text`
   text-align: center;
   font-size: 13px;
-  color: ${(props) => (props.type == "SUCCESS" ? green : red)};
+  color: ${(props) => (props.type == 'SUCCESS' ? green : red)};
 `;
 
 // Styles a horizontal line to break up the page
