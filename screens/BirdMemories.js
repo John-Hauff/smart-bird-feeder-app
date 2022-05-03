@@ -28,6 +28,7 @@ import { encode as btoa } from 'base-64';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import MyImagePicker from '../components/MyImagePicker';
 
 const { width } = Dimensions.get('window');
 const SPACING = 10;
@@ -378,6 +379,7 @@ const BirdMemories = () => {
               >
                 <Ionicons name="trash" size={30} color={brand} />
               </TouchableOpacity>
+              <MyImagePicker />
             </View>
 
             <View style={styles.imgIndexText}>
