@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
+  Alert,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -364,23 +365,57 @@ const BirdMemories = () => {
                 <TouchableOpacity
                   onPress={() => {
                     const curBirdMem = images[indexSelected];
-                    console.log(curBirdMem.creationTime);
+
                     if (isFetching === true) {
+                      console.log('Error: Image not loaded yet');
                       return null;
                     } else {
                       console.log('trash pressed w/ img loaded');
-                      const url =
-                        'https://smart-bird-feeder-api.herokuapp.com/user/delete-bird-memory';
-                      axios
-                        .post(url, {
-                          createdAt: curBirdMem.creationTime,
-                        })
-                        .then((res) => {
-                          console.log('response from the server is: ', res);
-                          // Refresh the screen to get updates image list
-                          onRefresh();
-                        })
-                        .catch((err) => console.log(err));
+
+                      // An alert to get confirmation for deletion of a bird memory is wrapped
+                      // in an async function so that the deletion condition check is not executed before
+                      // the user makes a choice within the Alert popup
+                      const asyncAlert = async () =>
+                        new Promise((resolve) => {
+                          Alert.alert(
+                            `Delete "${curBirdMem.species}"?`,
+                            'Are you sure you want to delete this Bird Memory?',
+                            [
+                              {
+                                text: 'Cancel',
+                                onPress: () => {
+                                  console.log('Cancel Pressed');
+                                  resolve('Cancel');
+                                },
+                                style: 'cancel',
+                              },
+                              {
+                                text: 'OK',
+                                onPress: () => {
+                                  console.log('OK Pressed');
+                                  resolve('OK');
+                                },
+                              },
+                            ]
+                          );
+                        });
+
+                      asyncAlert().then((res) => {
+                        if (res === 'OK') {
+                          const url =
+                            'https://smart-bird-feeder-api.herokuapp.com/user/delete-bird-memory';
+                          axios
+                            .post(url, {
+                              createdAt: curBirdMem.creationTime,
+                            })
+                            .then((res) => {
+                              console.log('response from the server is: ', res);
+                              // Refresh the screen to get updates image list
+                              onRefresh();
+                            })
+                            .catch((err) => console.log(err));
+                        }
+                      });
                     }
                   }}
                 >
