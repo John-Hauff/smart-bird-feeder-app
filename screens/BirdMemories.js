@@ -353,33 +353,40 @@ const BirdMemories = () => {
               />
             </View>
 
-            <View style={styles.trashIcon}>
-              <TouchableOpacity
-                onPress={() => {
-                  const curBirdMem = images[indexSelected];
-                  console.log(curBirdMem.creationTime);
-                  if (isFetching === true) {
-                    return null;
-                  } else {
-                    console.log('trash pressed w/ img loaded');
-                    const url =
-                      'https://smart-bird-feeder-api.herokuapp.com/user/delete-bird-memory';
-                    axios
-                      .post(url, {
-                        createdAt: curBirdMem.creationTime,
-                      })
-                      .then((res) => {
-                        console.log('response from the server is: ', res);
-                        // Refresh the screen to get updates image list
-                        onRefresh();
-                      })
-                      .catch((err) => console.log(err));
-                  }
-                }}
-              >
-                <Ionicons name="trash" size={30} color={brand} />
-              </TouchableOpacity>
-              <MyImagePicker />
+            <View style={styles.touchableIcons}>
+              <View style={styles.cameraIcon}>
+                {/* Touchable icon for capturing an image to upload as a bird memory */}
+                <MyImagePicker />
+              </View>
+
+              <View style={styles.trashIcon}>
+                {/* Trash can icon for deleting bird memories */}
+                <TouchableOpacity
+                  onPress={() => {
+                    const curBirdMem = images[indexSelected];
+                    console.log(curBirdMem.creationTime);
+                    if (isFetching === true) {
+                      return null;
+                    } else {
+                      console.log('trash pressed w/ img loaded');
+                      const url =
+                        'https://smart-bird-feeder-api.herokuapp.com/user/delete-bird-memory';
+                      axios
+                        .post(url, {
+                          createdAt: curBirdMem.creationTime,
+                        })
+                        .then((res) => {
+                          console.log('response from the server is: ', res);
+                          // Refresh the screen to get updates image list
+                          onRefresh();
+                        })
+                        .catch((err) => console.log(err));
+                    }
+                  }}
+                >
+                  <Ionicons name="trash" size={30} color={brand} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.imgIndexText}>
@@ -742,10 +749,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
 
-  trashIcon: {
+  touchableIcons: {
     flex: 0.5,
-    alignSelf: 'flex-end',
-    paddingRight: 32,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+
+  cameraIcon: {
+    paddingRight: 4 * 8,
+  },
+
+  trashIcon: {
+    paddingLeft: 4 * 8,
   },
 
   imgIndexText: {

@@ -19,13 +19,12 @@ export default function MyImagePicker() {
         quality: 1,
       });
 
-      console.log(result);
-
       if (!result.cancelled) {
         console.log('image was captured and the data is: ', result);
       }
     } else {
       Alert.alert('Permission must be granted to use the camera feature');
+      console.log(result);
     }
   };
 
